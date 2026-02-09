@@ -1,0 +1,27 @@
+{
+    "name": "gunjanjaswal/offload-images-js-css",
+    "description": "WordPress plugin to offload media files to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Gunjan Jaswal",
+            "email": "hello@gunjanjaswal.me",
+            "homepage": "https://www.gunjanjaswal.me"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "aws/aws-sdk-php": "^3.0",
+        "google/cloud-storage": "^1.0"
+    },
+    "suggest": {
+        "aws/aws-sdk-php": "Required for Amazon S3 and DigitalOcean Spaces support",
+        "google/cloud-storage": "Required for Google Cloud Storage support"
+    },
+    "autoload": {
+        "classmap": [
+            "includes/"
+        ]
+    }
+}
