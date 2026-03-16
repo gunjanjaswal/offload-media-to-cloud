@@ -64,6 +64,16 @@ abstract class OMTC_Provider_Base {
     abstract public function get_file_url($remote_path);
     
     /**
+     * Set file ACL to public-read (used when re-linking existing cloud files)
+     *
+     * @param string $remote_path Remote file path
+     * @return bool True on success
+     */
+    public function set_public($remote_path) {
+        return true; // Override in providers that support it
+    }
+
+    /**
      * Get MIME type of file
      */
     protected function get_mime_type($file_path) {

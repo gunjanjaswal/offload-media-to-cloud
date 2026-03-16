@@ -121,7 +121,8 @@ class OMTC_Bulk_Offload {
         $already_exists = $provider->remote_file_exists($remote_path);
 
         if ($already_exists) {
-            // File already in cloud — just link the URL, skip upload
+            // File already in cloud — ensure public-read ACL and link the URL
+            $provider->set_public($remote_path);
             $url = $provider->get_file_url($remote_path);
         } else {
             // Upload main file
@@ -148,6 +149,7 @@ class OMTC_Bulk_Offload {
                     $thumb_remote_path = $this->get_remote_path($thumb_path, $settings);
 
                     if ($provider->remote_file_exists($thumb_remote_path)) {
+                        $provider->set_public($thumb_remote_path);
                         $thumb_url = $provider->get_file_url($thumb_remote_path);
                     } else {
                         $thumb_result = $provider->upload_file($thumb_path, $thumb_remote_path);

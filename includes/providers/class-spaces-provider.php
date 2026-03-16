@@ -162,6 +162,43 @@ class OMTC_Spaces_Provider extends OMTC_Provider_Base {
         }
     }
 
+    public function set_public($remote_path) {
+        try {
+            $url = $this->get_endpoint($remote_path) . '?acl';
+
+            $acl_xml = '<?xml version="1.0" encoding="UTF-8"?>'
+                . '<AccessControlPolicy xmlns="http://s3.amazonaws.com/doc/2006-03-01/">'
+                . '<AccessControlList>'
+                . '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group">'
+                . '<URI>http://acs.amazonaws.com/groups/global/AllUsers</URI>'
+                . '</Grantee><Permission>READ</Permission></Grant>'
+                . '</AccessControlList>'
+                . '</AccessControlPolicy>';
+
+            $response = OMTC_S3_Signing::request(
+                'PUT',
+                $url,
+                array(
+                    'Content-Type' => 'application/xml',
+                    'x-amz-acl'   => 'public-read',
+                ),
+                $acl_xml,
+                $this->settings['access_key'],
+                $this->settings['secret_key'],
+                $this->settings['region']
+            );
+
+            if (is_wp_error($response)) {
+                return false;
+            }
+
+            $code = wp_remote_retrieve_response_code($response);
+            return ($code >= 200 && $code < 300);
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
     public function get_file_url($remote_path) {
         if (!empty($this->settings['cdn_url'])) {
             return trailingslashit($this->settings['cdn_url']) . $remote_path;
