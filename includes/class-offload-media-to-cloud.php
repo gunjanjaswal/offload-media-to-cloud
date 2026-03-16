@@ -68,6 +68,8 @@ class Offload_Media_To_Cloud {
         add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
         add_filter('wp_get_attachment_url', array($this, 'filter_attachment_url'), 10, 2);
         add_filter('wp_get_attachment_image_src', array($this, 'filter_attachment_image_src'), 10, 4);
+        add_filter('wp_calculate_image_srcset', array($this, 'filter_image_srcset'), 10, 5);
+        add_filter('the_content', array($this, 'filter_content_urls'), 99);
         add_filter('plugin_action_links_' . OMTC_PLUGIN_BASENAME, array($this, 'plugin_action_links'));
         add_filter('plugin_row_meta', array($this, 'plugin_row_meta'), 10, 2);
         add_action('admin_notices', array($this, 'deactivation_warning_notice'));
@@ -159,6 +161,82 @@ class Offload_Media_To_Cloud {
         return $image;
     }
     
+    /**
+     * Filter srcset URLs to use cloud storage
+     */
+    public function filter_image_srcset($sources, $size_array, $image_src, $image_meta, $attachment_id) {
+        if (!is_array($sources)) {
+            return $sources;
+        }
+
+        $remote_url = get_post_meta($attachment_id, 'omtc_remote_url', true);
+        if (!$remote_url) {
+            return $sources;
+        }
+
+        $upload_dir = wp_upload_dir();
+        $base_url = $upload_dir['baseurl'];
+        $settings = get_option('omtc_settings', array());
+        $cloud_base = $this->get_cloud_base_url($settings);
+
+        foreach ($sources as $width => $source) {
+            if (strpos($source['url'], $base_url) !== false) {
+                $relative = str_replace($base_url . '/', '', $source['url']);
+                $prefix = !empty($settings['path_prefix']) ? trailingslashit($settings['path_prefix']) : '';
+                $sources[$width]['url'] = $cloud_base . $prefix . $relative;
+            }
+        }
+
+        return $sources;
+    }
+
+    /**
+     * Replace local upload URLs in post content with cloud URLs
+     */
+    public function filter_content_urls($content) {
+        if (empty($content)) {
+            return $content;
+        }
+
+        $settings = get_option('omtc_settings', array());
+        if (empty($settings['provider']) || empty($settings['bucket'])) {
+            return $content;
+        }
+
+        $upload_dir = wp_upload_dir();
+        $base_url = $upload_dir['baseurl'];
+        $cloud_base = $this->get_cloud_base_url($settings);
+        $prefix = !empty($settings['path_prefix']) ? trailingslashit($settings['path_prefix']) : '';
+
+        $content = str_replace($base_url . '/', $cloud_base . $prefix, $content);
+
+        return $content;
+    }
+
+    /**
+     * Get cloud base URL (CDN or origin)
+     */
+    private function get_cloud_base_url($settings) {
+        if (!empty($settings['cdn_url'])) {
+            return trailingslashit($settings['cdn_url']);
+        }
+
+        $bucket = $settings['bucket'];
+        $region = isset($settings['region']) ? $settings['region'] : '';
+        $provider = isset($settings['provider']) ? $settings['provider'] : '';
+
+        if ($provider === 'spaces') {
+            return "https://{$bucket}.{$region}.digitaloceanspaces.com/";
+        } elseif ($provider === 'gcs') {
+            return "https://storage.googleapis.com/{$bucket}/";
+        } else {
+            if ($region === 'us-east-1') {
+                return "https://{$bucket}.s3.amazonaws.com/";
+            }
+            return "https://{$bucket}.s3.{$region}.amazonaws.com/";
+        }
+    }
+
     /**
      * Render bulk offload page
      */
