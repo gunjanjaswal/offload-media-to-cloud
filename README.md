@@ -1,157 +1,72 @@
-# Offload Images JS CSS
+# Offload Media to Cloud
 
 ![WordPress Plugin Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![WordPress Compatibility](https://img.shields.io/badge/wordpress-5.0%2B-brightgreen.svg)
 ![PHP Version](https://img.shields.io/badge/php-7.2%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPLv2-red.svg)
 
-> Seamlessly transfer and serve your WordPress media files from Amazon S3, DigitalOcean Spaces, or Google Cloud Storage with automatic sync and one-click bulk migration.
+Automatically offload WordPress media to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage. No Composer or external SDKs required — just install, activate, and configure.
 
-## 🚀 Features
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ff813f?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/gunjanjaswal)
 
-### Multi-Cloud Provider Support
-- **Amazon S3** - Industry-standard object storage
-- **DigitalOcean Spaces** - S3-compatible with predictable pricing
-- **Google Cloud Storage** - Google's powerful infrastructure
+## Features
 
-### Automatic Synchronization
-- ✅ New uploads automatically copied to cloud storage
-- ✅ All image thumbnails synced automatically
-- ✅ URL rewriting for seamless cloud delivery
-- ✅ Optional local file removal after upload
+- **Amazon S3** — Industry-standard object storage
+- **DigitalOcean Spaces** — S3-compatible with predictable pricing
+- **Google Cloud Storage** — Google's infrastructure via HMAC keys
+- **Zero Dependencies** — No Composer, no vendor folder, no SDKs
+- **Auto Sync** — New uploads automatically copied to cloud storage
+- **Bulk Migration** — One-click offload for existing media with progress tracking
+- **CDN Support** — CloudFront, custom domains, any CDN
+- **URL Rewriting** — Seamless cloud delivery without breaking links
+- **Local File Removal** — Optionally delete local files after upload
+- **Connection Testing** — Verify credentials before going live
 
-### Bulk Migration Tool
-- 📦 One-click migration for existing media files
-- 📊 Real-time progress tracking
-- ⚡ Batch processing for optimal performance
-- 🔍 Detailed error reporting
+## Requirements
 
-### Advanced Configuration
-- 🌐 CDN integration (CloudFront, custom domains)
-- 📁 Custom path prefix support
-- 🔐 Secure credential storage
-- ✔️ Built-in connection testing
+- WordPress 5.0+
+- PHP 7.2+
+- Cloud storage account (S3, Spaces, or GCS)
 
-## 📋 Requirements
+No Composer or external libraries needed. Uses WordPress's built-in HTTP API with AWS Signature V4 request signing.
 
-- WordPress 5.0 or higher
-- PHP 7.2 or higher
-- Cloud storage account (Amazon S3, DigitalOcean Spaces, or Google Cloud Storage)
-- Composer (for installing required SDKs)
+## Installation
 
-## 🔧 Installation
+1. Download the plugin ZIP or clone this repo
+2. Upload to `/wp-content/plugins/offload-media-to-cloud/`
+3. Activate through WordPress admin
+4. Go to **Offload Media > Settings** and configure your provider
 
-### Via WordPress Admin
+Or install directly from WordPress admin: **Plugins > Add New > Upload Plugin**
 
-1. Download the plugin ZIP file
-2. Navigate to **Plugins > Add New > Upload Plugin**
-3. Choose the ZIP file and click **Install Now**
-4. Activate the plugin
+## Configuration
 
-### Manual Installation
+### Amazon S3
+- Access Key ID, Secret Access Key, Bucket Name, Region (e.g. `us-east-1`)
 
-1. Clone or download this repository
-2. Upload the `offload-images-js-css` folder to `/wp-content/plugins/`
-3. Activate the plugin through the WordPress admin panel
+### DigitalOcean Spaces
+- Access Key, Secret Key, Space Name, Region (e.g. `nyc3`)
 
-### Install Required SDKs
+### Google Cloud Storage
+- HMAC Access Key, HMAC Secret Key, Bucket Name
+- Create HMAC keys in: GCS Console > Cloud Storage > Settings > Interoperability
 
-Navigate to your WordPress root directory and install the required SDK:
+### Optional Settings
+- **CDN URL** — CloudFront or custom CDN domain
+- **Path Prefix** — Organize files in cloud folders
+- **Remove Local Files** — Auto-delete after upload
 
-**For Amazon S3 / DigitalOcean Spaces:**
-```bash
-cd wp-content/plugins/offload-images-js-css
-composer install
+## Bulk Offload
+
+Navigate to **Offload Media > Bulk Offload** to migrate all existing media files to cloud storage with real-time progress tracking.
+
+## File Structure
+
 ```
-
-This will install both AWS SDK and Google Cloud Storage SDK automatically.
-
-**Don't have Composer?**
-1. Download from [getcomposer.org](https://getcomposer.org/)
-2. Install it on your system
-3. Run the command above
-
-**For Plugin Developers:**
-To create a distributable version with SDKs bundled:
-```bash
-composer install --no-dev --optimize-autoloader
-```
-
-Then zip the entire plugin folder. Users can install without running Composer.
-
-See [SDK-INSTALLATION.md](SDK-INSTALLATION.md) for detailed instructions.
-
-## ⚙️ Configuration
-
-### 1. Access Settings
-Navigate to **Offload Media > Settings** in your WordPress admin panel.
-
-### 2. Choose Your Provider
-Select from:
-- Amazon S3
-- DigitalOcean Spaces
-- Google Cloud Storage
-
-### 3. Enter Credentials
-
-**For Amazon S3:**
-- Access Key ID
-- Secret Access Key
-- Bucket Name
-- Region (e.g., `us-east-1`)
-
-**For DigitalOcean Spaces:**
-- Access Key
-- Secret Key
-- Space Name (bucket)
-- Region (e.g., `nyc3`)
-
-**For Google Cloud Storage:**
-- Service Account Key File Path
-- Bucket Name
-- Region (e.g., `us-central1`)
-
-### 4. Optional Settings
-- **CDN URL**: Enter your CloudFront or custom CDN domain
-- **Path Prefix**: Organize files with a custom folder structure
-- **Remove Local Files**: Automatically delete files from server after upload
-
-### 5. Test & Save
-Click **Test Connection** to verify your settings, then **Save Settings**.
-
-## 📦 Bulk Offload Existing Media
-
-1. Navigate to **Offload Media > Bulk Offload**
-2. Review the count of media files to be offloaded
-3. Click **Start Bulk Offload**
-4. Monitor progress in real-time
-5. Review any errors if they occur
-
-## 🎯 Use Cases
-
-- **High-Traffic Websites** - Reduce server load and bandwidth costs
-- **Photography Sites** - Store and deliver large image libraries efficiently
-- **E-commerce Stores** - Offload product images to improve performance
-- **News & Magazines** - Handle extensive media archives with ease
-- **Multi-Site Networks** - Centralize media storage across multiple sites
-
-## 🔒 Security
-
-- All credentials are stored securely in your WordPress database
-- No data is sent to third parties (except your chosen cloud provider)
-- Supports IAM roles and service accounts for enhanced security
-- Optional encryption in transit and at rest (provider-dependent)
-
-## 🛠️ Technical Details
-
-### File Structure
-```
-offload-images-js-css/
+offload-media-to-cloud/
 ├── assets/
-│   ├── css/
-│   │   └── admin.css
-│   └── js/
-│       └── admin.js
+│   ├── css/admin.css
+│   └── js/admin.js
 ├── includes/
 │   ├── providers/
 │   │   ├── class-provider-base.php
@@ -161,75 +76,23 @@ offload-images-js-css/
 │   ├── views/
 │   │   ├── settings.php
 │   │   └── bulk-offload.php
-│   ├── class-offload-images-js-css.php
+│   ├── class-offload-media-to-cloud.php
+│   ├── class-s3-signing.php
 │   ├── class-settings.php
 │   ├── class-uploader.php
+│   ├── class-dependency-checker.php
 │   └── class-bulk-offload.php
-├── offload-images-js-css.php
+├── offload-media-to-cloud.php
 ├── readme.txt
 └── README.md
 ```
 
-### Hooks & Filters
+## License
 
-**Actions:**
-- `oijc_before_upload` - Fires before uploading to cloud storage
-- `oijc_after_upload` - Fires after successful upload
-- `oijc_before_delete` - Fires before deleting from cloud storage
+GPLv2 or later — [LICENSE](https://www.gnu.org/licenses/gpl-2.0.html)
 
-**Filters:**
-- `oijc_remote_path` - Modify the remote file path
-- `oijc_file_url` - Modify the returned file URL
-- `oijc_upload_args` - Modify upload arguments
+## Developer
 
-## 🤝 Contributing
+**Gunjan Jaswal** — [gunjanjaswal.me](https://www.gunjanjaswal.me) — [hello@gunjanjaswal.me](mailto:hello@gunjanjaswal.me)
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the GPLv2 or later - see the [LICENSE](https://www.gnu.org/licenses/gpl-2.0.html) for details.
-
-## 👨‍💻 Developer
-
-**Gunjan Jaswal**
-
-- 🌐 Website: [www.gunjanjaswal.me](https://www.gunjanjaswal.me)
-- 📧 Email: [hello@gunjanjaswal.me](mailto:hello@gunjanjaswal.me)
-- ☕ Support: [Buy Me a Coffee](https://buymeacoffee.com/gunjanjaswal)
-
-## 💖 Support
-
-If you find this plugin helpful, please consider:
-
-- ⭐ Starring this repository
-- ☕ [Buying me a coffee](https://buymeacoffee.com/gunjanjaswal)
-- 📢 Sharing with other WordPress users
-- 💬 Leaving a review on WordPress.org
-
-## 📚 Documentation
-
-For detailed documentation, visit the [Wiki](https://github.com/gunjanjaswal/Offload-Images-JS-CSS/wiki) (coming soon).
-
-## 🐛 Bug Reports
-
-Found a bug? Please [open an issue](https://github.com/gunjanjaswal/Offload-Images-JS-CSS/issues) with detailed information.
-
-## 🗺️ Roadmap
-
-- [ ] Support for additional cloud providers (Azure, Backblaze B2)
-- [ ] Advanced image optimization before upload
-- [ ] Automatic backup and restore functionality
-- [ ] Multi-site network support enhancements
-- [ ] WP-CLI commands for bulk operations
-- [ ] Integration with popular backup plugins
-
----
-
-**Made with ❤️ by Gunjan Jaswal**
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ff813f?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/gunjanjaswal)

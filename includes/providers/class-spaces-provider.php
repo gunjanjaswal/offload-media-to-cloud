@@ -1,104 +1,118 @@
 <?php
 /**
- * DigitalOcean Spaces provider
+ * DigitalOcean Spaces provider - uses direct REST API calls (no SDK required)
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class OIJC_Spaces_Provider extends OIJC_Provider_Base {
-    
-    private $client;
-    
-    public function __construct($settings) {
-        parent::__construct($settings);
-        
-        // DigitalOcean Spaces uses S3-compatible API
-        if (class_exists('Aws\S3\S3Client')) {
-            try {
-                $endpoint = "https://{$this->settings['region']}.digitaloceanspaces.com";
-                
-                $this->client = new Aws\S3\S3Client([
-                    'version' => 'latest',
-                    'region' => $this->settings['region'],
-                    'endpoint' => $endpoint,
-                    'credentials' => [
-                        'key' => $this->settings['access_key'],
-                        'secret' => $this->settings['secret_key']
-                    ]
-                ]);
-            } catch (Exception $e) {
-                error_log('OIJC Spaces Error: ' . $e->getMessage());
-            }
-        }
+class OMTC_Spaces_Provider extends OMTC_Provider_Base {
+
+    private function get_endpoint($path = '') {
+        $region = $this->settings['region'];
+        $bucket = $this->settings['bucket'];
+
+        return "https://{$bucket}.{$region}.digitaloceanspaces.com/{$path}";
     }
-    
+
     public function upload_file($file_path, $remote_path) {
-        if (!$this->client) {
-            return array('success' => false, 'message' => __('AWS SDK not available', 'offload-images-js-css'));
-        }
-        
         try {
-            $result = $this->client->putObject([
-                'Bucket' => $this->settings['bucket'],
-                'Key' => $remote_path,
-                'SourceFile' => $file_path,
-                'ACL' => 'public-read',
-                'ContentType' => $this->get_mime_type($file_path)
-            ]);
-            
-            $url = $this->get_file_url($remote_path);
-            
-            return array('success' => true, 'url' => $url);
+            $body = file_get_contents($file_path);
+            if ($body === false) {
+                return array('success' => false, 'message' => __('Could not read local file', 'offload-media-to-cloud'));
+            }
+
+            $mime = $this->get_mime_type($file_path);
+            $url = $this->get_endpoint($remote_path);
+
+            $response = OMTC_S3_Signing::request(
+                'PUT',
+                $url,
+                array(
+                    'Content-Type' => $mime,
+                    'x-amz-acl'    => 'public-read',
+                ),
+                $body,
+                $this->settings['access_key'],
+                $this->settings['secret_key'],
+                $this->settings['region']
+            );
+
+            if (is_wp_error($response)) {
+                return array('success' => false, 'message' => $response->get_error_message());
+            }
+
+            $code = wp_remote_retrieve_response_code($response);
+            if ($code >= 200 && $code < 300) {
+                return array('success' => true, 'url' => $this->get_file_url($remote_path));
+            }
+
+            $body_response = wp_remote_retrieve_body($response);
+            return array('success' => false, 'message' => "Spaces returned HTTP {$code}: {$body_response}");
         } catch (Exception $e) {
             return array('success' => false, 'message' => $e->getMessage());
         }
     }
-    
+
     public function delete_file($remote_path) {
-        if (!$this->client) {
-            return array('success' => false, 'message' => __('AWS SDK not available', 'offload-images-js-css'));
-        }
-        
         try {
-            $this->client->deleteObject([
-                'Bucket' => $this->settings['bucket'],
-                'Key' => $remote_path
-            ]);
-            
+            $url = $this->get_endpoint($remote_path);
+
+            $response = OMTC_S3_Signing::request(
+                'DELETE',
+                $url,
+                array(),
+                '',
+                $this->settings['access_key'],
+                $this->settings['secret_key'],
+                $this->settings['region']
+            );
+
+            if (is_wp_error($response)) {
+                return array('success' => false, 'message' => $response->get_error_message());
+            }
+
             return array('success' => true);
         } catch (Exception $e) {
             return array('success' => false, 'message' => $e->getMessage());
         }
     }
-    
+
     public function test_connection() {
-        if (!$this->client) {
-            return array('success' => false, 'message' => __('AWS SDK not available. Please install the AWS SDK for PHP.', 'offload-images-js-css'));
-        }
-        
         try {
-            $this->client->headBucket([
-                'Bucket' => $this->settings['bucket']
-            ]);
-            
-            return array('success' => true);
+            $url = $this->get_endpoint();
+
+            $response = OMTC_S3_Signing::request(
+                'HEAD',
+                $url,
+                array(),
+                '',
+                $this->settings['access_key'],
+                $this->settings['secret_key'],
+                $this->settings['region']
+            );
+
+            if (is_wp_error($response)) {
+                return array('success' => false, 'message' => $response->get_error_message());
+            }
+
+            $code = wp_remote_retrieve_response_code($response);
+            if ($code >= 200 && $code < 400) {
+                return array('success' => true);
+            }
+
+            return array('success' => false, 'message' => "Spaces returned HTTP {$code}");
         } catch (Exception $e) {
             return array('success' => false, 'message' => $e->getMessage());
         }
     }
-    
+
     public function get_file_url($remote_path) {
-        // Use CDN URL if configured
         if (!empty($this->settings['cdn_url'])) {
             return trailingslashit($this->settings['cdn_url']) . $remote_path;
         }
-        
-        // Use Spaces URL
-        $region = $this->settings['region'];
-        $bucket = $this->settings['bucket'];
-        
-        return "https://{$bucket}.{$region}.digitaloceanspaces.com/{$remote_path}";
+
+        return $this->get_endpoint($remote_path);
     }
 }

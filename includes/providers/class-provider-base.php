@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-abstract class OIJC_Provider_Base {
+abstract class OMTC_Provider_Base {
     
     protected $settings;
     

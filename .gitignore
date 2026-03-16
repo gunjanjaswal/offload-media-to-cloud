@@ -2,7 +2,8 @@
 .DS_Store
 Thumbs.db
 
-# Composer - keep vendor for bundling SDKs
+# Composer (not used)
+vendor/
 composer.lock
 
 # IDE

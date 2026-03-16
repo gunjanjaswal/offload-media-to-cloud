@@ -33,11 +33,11 @@ jQuery(document).ready(function($) {
         $status.hide();
         
         $.ajax({
-            url: oijc_ajax.ajax_url,
+            url: omtc_ajax.ajax_url,
             type: 'POST',
             data: {
-                action: 'oijc_test_connection',
-                nonce: oijc_ajax.nonce,
+                action: 'omtc_test_connection',
+                nonce: omtc_ajax.nonce,
                 provider: provider,
                 credentials: credentials
             },
@@ -65,11 +65,11 @@ jQuery(document).ready(function($) {
         
         // Get media count on page load
         $.ajax({
-            url: oijc_ajax.ajax_url,
+            url: omtc_ajax.ajax_url,
             type: 'POST',
             data: {
-                action: 'oijc_get_media_count',
-                nonce: oijc_ajax.nonce
+                action: 'omtc_get_media_count',
+                nonce: omtc_ajax.nonce
             },
             success: function(response) {
                 if (response.success) {
@@ -106,11 +106,11 @@ jQuery(document).ready(function($) {
             
             function processBatch() {
                 $.ajax({
-                    url: oijc_ajax.ajax_url,
+                    url: omtc_ajax.ajax_url,
                     type: 'POST',
                     data: {
-                        action: 'oijc_bulk_offload',
-                        nonce: oijc_ajax.nonce,
+                        action: 'omtc_bulk_offload',
+                        nonce: omtc_ajax.nonce,
                         offset: offset
                     },
                     success: function(response) {

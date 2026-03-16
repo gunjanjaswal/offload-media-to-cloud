@@ -1,97 +1,123 @@
 <?php
 /**
- * Google Cloud Storage provider
+ * Google Cloud Storage provider - uses GCS XML API with HMAC keys (no SDK required)
+ *
+ * GCS supports S3-compatible HMAC authentication via its XML API.
+ * Users must create HMAC keys in GCS Console > Cloud Storage > Settings > Interoperability.
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class OIJC_GCS_Provider extends OIJC_Provider_Base {
-    
-    private $client;
-    private $bucket;
-    
-    public function __construct($settings) {
-        parent::__construct($settings);
-        
-        // Initialize Google Cloud Storage client if available
-        if (class_exists('Google\Cloud\Storage\StorageClient')) {
-            try {
-                $config = array();
-                
-                // If key file path is provided
-                if (!empty($this->settings['key_file_path'])) {
-                    $config['keyFilePath'] = $this->settings['key_file_path'];
-                }
-                
-                $storage = new Google\Cloud\Storage\StorageClient($config);
-                $this->bucket = $storage->bucket($this->settings['bucket']);
-            } catch (Exception $e) {
-                error_log('OIJC GCS Error: ' . $e->getMessage());
-            }
-        }
+class OMTC_GCS_Provider extends OMTC_Provider_Base {
+
+    private function get_endpoint($path = '') {
+        $bucket = $this->settings['bucket'];
+        return "https://{$bucket}.storage.googleapis.com/{$path}";
     }
-    
+
     public function upload_file($file_path, $remote_path) {
-        if (!$this->bucket) {
-            return array('success' => false, 'message' => __('Google Cloud Storage SDK not available', 'offload-images-js-css'));
-        }
-        
         try {
-            $file_content = file_get_contents($file_path);
-            
-            $object = $this->bucket->upload($file_content, [
-                'name' => $remote_path,
-                'metadata' => [
-                    'contentType' => $this->get_mime_type($file_path)
-                ],
-                'predefinedAcl' => 'publicRead'
-            ]);
-            
-            $url = $this->get_file_url($remote_path);
-            
-            return array('success' => true, 'url' => $url);
+            $body = file_get_contents($file_path);
+            if ($body === false) {
+                return array('success' => false, 'message' => __('Could not read local file', 'offload-media-to-cloud'));
+            }
+
+            $mime = $this->get_mime_type($file_path);
+            $url = $this->get_endpoint($remote_path);
+
+            // GCS HMAC uses region 'auto' and service 's3'
+            $response = OMTC_S3_Signing::request(
+                'PUT',
+                $url,
+                array(
+                    'Content-Type' => $mime,
+                    'x-amz-acl'    => 'public-read',
+                ),
+                $body,
+                $this->settings['access_key'],
+                $this->settings['secret_key'],
+                'auto',
+                's3'
+            );
+
+            if (is_wp_error($response)) {
+                return array('success' => false, 'message' => $response->get_error_message());
+            }
+
+            $code = wp_remote_retrieve_response_code($response);
+            if ($code >= 200 && $code < 300) {
+                return array('success' => true, 'url' => $this->get_file_url($remote_path));
+            }
+
+            $body_response = wp_remote_retrieve_body($response);
+            return array('success' => false, 'message' => "GCS returned HTTP {$code}: {$body_response}");
         } catch (Exception $e) {
             return array('success' => false, 'message' => $e->getMessage());
         }
     }
-    
+
     public function delete_file($remote_path) {
-        if (!$this->bucket) {
-            return array('success' => false, 'message' => __('Google Cloud Storage SDK not available', 'offload-images-js-css'));
-        }
-        
         try {
-            $object = $this->bucket->object($remote_path);
-            $object->delete();
-            
+            $url = $this->get_endpoint($remote_path);
+
+            $response = OMTC_S3_Signing::request(
+                'DELETE',
+                $url,
+                array(),
+                '',
+                $this->settings['access_key'],
+                $this->settings['secret_key'],
+                'auto',
+                's3'
+            );
+
+            if (is_wp_error($response)) {
+                return array('success' => false, 'message' => $response->get_error_message());
+            }
+
             return array('success' => true);
         } catch (Exception $e) {
             return array('success' => false, 'message' => $e->getMessage());
         }
     }
-    
+
     public function test_connection() {
-        if (!$this->bucket) {
-            return array('success' => false, 'message' => __('Google Cloud Storage SDK not available. Please install the Google Cloud Storage PHP library.', 'offload-images-js-css'));
-        }
-        
         try {
-            $this->bucket->exists();
-            return array('success' => true);
+            $url = $this->get_endpoint();
+
+            $response = OMTC_S3_Signing::request(
+                'HEAD',
+                $url,
+                array(),
+                '',
+                $this->settings['access_key'],
+                $this->settings['secret_key'],
+                'auto',
+                's3'
+            );
+
+            if (is_wp_error($response)) {
+                return array('success' => false, 'message' => $response->get_error_message());
+            }
+
+            $code = wp_remote_retrieve_response_code($response);
+            if ($code >= 200 && $code < 400) {
+                return array('success' => true);
+            }
+
+            return array('success' => false, 'message' => "GCS returned HTTP {$code}");
         } catch (Exception $e) {
             return array('success' => false, 'message' => $e->getMessage());
         }
     }
-    
+
     public function get_file_url($remote_path) {
-        // Use CDN URL if configured
         if (!empty($this->settings['cdn_url'])) {
             return trailingslashit($this->settings['cdn_url']) . $remote_path;
         }
-        
-        // Use GCS URL
+
         $bucket = $this->settings['bucket'];
         return "https://storage.googleapis.com/{$bucket}/{$remote_path}";
     }

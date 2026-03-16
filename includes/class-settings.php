@@ -7,22 +7,22 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class OIJC_Settings {
+class OMTC_Settings {
     
     private $options;
     
     public function __construct() {
-        $this->options = get_option('oijc_settings', array());
+        $this->options = get_option('omtc_settings', array());
         add_action('admin_init', array($this, 'register_settings'));
-        add_action('wp_ajax_oijc_save_settings', array($this, 'save_settings_ajax'));
-        add_action('wp_ajax_oijc_test_connection', array($this, 'test_connection_ajax'));
+        add_action('wp_ajax_omtc_save_settings', array($this, 'save_settings_ajax'));
+        add_action('wp_ajax_omtc_test_connection', array($this, 'test_connection_ajax'));
     }
     
     /**
      * Register settings
      */
     public function register_settings() {
-        register_setting('oijc_settings_group', 'oijc_settings', array($this, 'sanitize_settings'));
+        register_setting('omtc_settings_group', 'omtc_settings', array($this, 'sanitize_settings'));
     }
     
     /**
@@ -77,50 +77,50 @@ class OIJC_Settings {
      * Render settings page
      */
     public function render_settings_page() {
-        require_once OIJC_PLUGIN_DIR . 'includes/views/settings.php';
+        require_once OMTC_PLUGIN_DIR . 'includes/views/settings.php';
     }
     
     /**
      * Save settings via AJAX
      */
     public function save_settings_ajax() {
-        check_ajax_referer('oijc_ajax_nonce', 'nonce');
+        check_ajax_referer('omtc_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-images-js-css')));
+            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
         }
         
         $settings = $_POST['settings'];
         $sanitized = $this->sanitize_settings($settings);
-        update_option('oijc_settings', $sanitized);
+        update_option('omtc_settings', $sanitized);
         
-        wp_send_json_success(array('message' => __('Settings saved successfully', 'offload-images-js-css')));
+        wp_send_json_success(array('message' => __('Settings saved successfully', 'offload-media-to-cloud')));
     }
     
     /**
      * Test connection via AJAX
      */
     public function test_connection_ajax() {
-        check_ajax_referer('oijc_ajax_nonce', 'nonce');
+        check_ajax_referer('omtc_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-images-js-css')));
+            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
         }
         
         $provider = sanitize_text_field($_POST['provider']);
         $credentials = $_POST['credentials'];
         
         // Get provider instance
-        $provider_class = 'OIJC_' . ucfirst($provider) . '_Provider';
+        $provider_class = 'OMTC_' . ucfirst($provider) . '_Provider';
         if (!class_exists($provider_class)) {
-            wp_send_json_error(array('message' => __('Invalid provider', 'offload-images-js-css')));
+            wp_send_json_error(array('message' => __('Invalid provider', 'offload-media-to-cloud')));
         }
         
         $provider_instance = new $provider_class($credentials);
         $result = $provider_instance->test_connection();
         
         if ($result['success']) {
-            wp_send_json_success(array('message' => __('Connection successful!', 'offload-images-js-css')));
+            wp_send_json_success(array('message' => __('Connection successful!', 'offload-media-to-cloud')));
         } else {
             wp_send_json_error(array('message' => $result['message']));
         }

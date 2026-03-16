@@ -7,21 +7,21 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class OIJC_Bulk_Offload {
+class OMTC_Bulk_Offload {
     
     public function __construct() {
-        add_action('wp_ajax_oijc_get_media_count', array($this, 'get_media_count_ajax'));
-        add_action('wp_ajax_oijc_bulk_offload', array($this, 'bulk_offload_ajax'));
+        add_action('wp_ajax_omtc_get_media_count', array($this, 'get_media_count_ajax'));
+        add_action('wp_ajax_omtc_bulk_offload', array($this, 'bulk_offload_ajax'));
     }
     
     /**
      * Get count of media files not yet offloaded
      */
     public function get_media_count_ajax() {
-        check_ajax_referer('oijc_ajax_nonce', 'nonce');
+        check_ajax_referer('omtc_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-images-js-css')));
+            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
         }
         
         $args = array(
@@ -30,7 +30,7 @@ class OIJC_Bulk_Offload {
             'posts_per_page' => -1,
             'meta_query' => array(
                 array(
-                    'key' => 'oijc_remote_url',
+                    'key' => 'omtc_remote_url',
                     'compare' => 'NOT EXISTS'
                 )
             )
@@ -46,10 +46,10 @@ class OIJC_Bulk_Offload {
      * Bulk offload media files
      */
     public function bulk_offload_ajax() {
-        check_ajax_referer('oijc_ajax_nonce', 'nonce');
+        check_ajax_referer('omtc_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-images-js-css')));
+            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
         }
         
         $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
@@ -62,7 +62,7 @@ class OIJC_Bulk_Offload {
             'offset' => $offset,
             'meta_query' => array(
                 array(
-                    'key' => 'oijc_remote_url',
+                    'key' => 'omtc_remote_url',
                     'compare' => 'NOT EXISTS'
                 )
             )
@@ -73,11 +73,11 @@ class OIJC_Bulk_Offload {
         $errors = array();
         
         if ($query->have_posts()) {
-            $settings = get_option('oijc_settings', array());
+            $settings = get_option('omtc_settings', array());
             $provider = $this->get_provider($settings);
             
             if (!$provider) {
-                wp_send_json_error(array('message' => __('Provider not configured', 'offload-images-js-css')));
+                wp_send_json_error(array('message' => __('Provider not configured', 'offload-media-to-cloud')));
             }
             
             while ($query->have_posts()) {
@@ -115,7 +115,7 @@ class OIJC_Bulk_Offload {
         $file_path = get_attached_file($attachment_id);
         
         if (!file_exists($file_path)) {
-            return array('success' => false, 'message' => __('File not found', 'offload-images-js-css'));
+            return array('success' => false, 'message' => __('File not found', 'offload-media-to-cloud'));
         }
         
         // Upload main file
@@ -126,8 +126,8 @@ class OIJC_Bulk_Offload {
             return $result;
         }
         
-        update_post_meta($attachment_id, 'oijc_remote_url', $result['url']);
-        update_post_meta($attachment_id, 'oijc_remote_path', $remote_path);
+        update_post_meta($attachment_id, 'omtc_remote_url', $result['url']);
+        update_post_meta($attachment_id, 'omtc_remote_path', $remote_path);
         
         // Upload thumbnails
         $metadata = wp_get_attachment_metadata($attachment_id);
@@ -141,7 +141,7 @@ class OIJC_Bulk_Offload {
                     $thumb_result = $provider->upload_file($thumb_path, $thumb_remote_path);
                     
                     if ($thumb_result['success']) {
-                        update_post_meta($attachment_id, 'oijc_remote_url_' . $size, $thumb_result['url']);
+                        update_post_meta($attachment_id, 'omtc_remote_url_' . $size, $thumb_result['url']);
                     }
                 }
             }
@@ -163,7 +163,7 @@ class OIJC_Bulk_Offload {
             return null;
         }
         
-        $provider_class = 'OIJC_' . ucfirst($settings['provider']) . '_Provider';
+        $provider_class = 'OMTC_' . ucfirst($settings['provider']) . '_Provider';
         if (!class_exists($provider_class)) {
             return null;
         }
@@ -204,4 +204,4 @@ class OIJC_Bulk_Offload {
 }
 
 // Initialize
-new OIJC_Bulk_Offload();
+new OMTC_Bulk_Offload();
