@@ -53,7 +53,7 @@ class OMTC_Bulk_Offload {
         }
         
         $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
-        $batch_size = 10; // Process 10 items at a time
+        $batch_size = 3; // Small batches to avoid Cloudflare/server timeouts
         
         $args = array(
             'post_type' => 'attachment',
