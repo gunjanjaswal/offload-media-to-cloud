@@ -63,6 +63,11 @@ jQuery(document).ready(function($) {
     // Bulk restore functionality
     if ($('#start-bulk-restore').length) {
 
+        // Reset UI state on page load
+        $('#bulk-restore-complete').hide();
+        $('#bulk-restore-progress').hide();
+        $('#bulk-restore-errors').hide();
+
         // Get restore count on page load
         $.ajax({
             url: omtc_ajax.ajax_url,
@@ -168,6 +173,11 @@ jQuery(document).ready(function($) {
 
     // Bulk offload functionality
     if ($('#start-bulk-offload').length) {
+
+        // Reset UI state on page load
+        $('#bulk-offload-complete').hide();
+        $('#bulk-offload-progress').hide();
+        $('#bulk-offload-errors').hide();
         
         // Get media count on page load
         $.ajax({
