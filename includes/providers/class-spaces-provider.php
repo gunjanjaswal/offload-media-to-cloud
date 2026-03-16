@@ -55,6 +55,35 @@ class OMTC_Spaces_Provider extends OMTC_Provider_Base {
         }
     }
 
+    public function download_file($remote_path) {
+        try {
+            $url = $this->get_endpoint($remote_path);
+
+            $response = OMTC_S3_Signing::request(
+                'GET',
+                $url,
+                array(),
+                '',
+                $this->settings['access_key'],
+                $this->settings['secret_key'],
+                $this->settings['region']
+            );
+
+            if (is_wp_error($response)) {
+                return array('success' => false, 'message' => $response->get_error_message());
+            }
+
+            $code = wp_remote_retrieve_response_code($response);
+            if ($code >= 200 && $code < 300) {
+                return array('success' => true, 'body' => wp_remote_retrieve_body($response));
+            }
+
+            return array('success' => false, 'message' => "Spaces returned HTTP {$code}");
+        } catch (Exception $e) {
+            return array('success' => false, 'message' => $e->getMessage());
+        }
+    }
+
     public function delete_file($remote_path) {
         try {
             $url = $this->get_endpoint($remote_path);

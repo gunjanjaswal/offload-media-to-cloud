@@ -60,6 +60,104 @@ jQuery(document).ready(function($) {
         });
     });
     
+    // Bulk restore functionality
+    if ($('#start-bulk-restore').length) {
+
+        // Get restore count on page load
+        $.ajax({
+            url: omtc_ajax.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'omtc_get_restore_count',
+                nonce: omtc_ajax.nonce
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#restore-count').text(response.data.count);
+                    if (response.data.count === 0) {
+                        $('#restore-count').text('0 (All files are already stored locally!)');
+                        $('#start-bulk-restore').prop('disabled', true);
+                    }
+                }
+            }
+        });
+
+        // Start bulk restore
+        $('#start-bulk-restore').on('click', function() {
+            var $button = $(this);
+            var totalCount = parseInt($('#restore-count').text());
+
+            if (isNaN(totalCount) || totalCount === 0) {
+                return;
+            }
+
+            if (!confirm('This will download ' + totalCount + ' files from cloud storage. Continue?')) {
+                return;
+            }
+
+            $button.prop('disabled', true).addClass('disabled');
+            $('#bulk-restore-progress').show();
+            $('#bulk-restore-errors').hide();
+            $('#restore-error-list').empty();
+
+            var offset = 0;
+            var processed = 0;
+            var errors = [];
+
+            function restoreBatch() {
+                $.ajax({
+                    url: omtc_ajax.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'omtc_bulk_restore',
+                        nonce: omtc_ajax.nonce,
+                        offset: offset
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            processed += response.data.processed;
+                            offset += response.data.processed + response.data.skipped;
+
+                            if (response.data.errors.length > 0) {
+                                errors = errors.concat(response.data.errors);
+                            }
+
+                            var percentage = totalCount > 0 ? Math.round((processed / totalCount) * 100) : 100;
+                            $('#restore-progress-bar').css('width', Math.min(percentage, 100) + '%');
+                            $('#restore-progress-percentage').text(Math.min(percentage, 100) + '%');
+                            $('#restore-progress-text').text('Restored ' + processed + ' of ' + totalCount + ' files');
+
+                            if (response.data.complete) {
+                                $('#bulk-restore-complete').show();
+                                $('#restore-progress-text').text('Complete! Restored ' + processed + ' files.');
+
+                                if (errors.length > 0) {
+                                    $('#bulk-restore-errors').show();
+                                    errors.forEach(function(error) {
+                                        $('#restore-error-list').append('<li><strong>' + error.title + '</strong>: ' + error.error + '</li>');
+                                    });
+                                }
+
+                                $('#restore-count').text('0 (All files are already stored locally!)');
+                            } else {
+                                restoreBatch();
+                            }
+                        } else {
+                            alert('Error: ' + response.data.message);
+                            $button.prop('disabled', false).removeClass('disabled');
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred during restore.');
+                        $button.prop('disabled', false).removeClass('disabled');
+                    }
+                });
+            }
+
+            restoreBatch();
+        });
+    }
+
     // Bulk offload functionality
     if ($('#start-bulk-offload').length) {
         

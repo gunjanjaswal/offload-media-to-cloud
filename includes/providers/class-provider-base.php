@@ -40,8 +40,16 @@ abstract class OMTC_Provider_Base {
     abstract public function test_connection();
     
     /**
+     * Download file from cloud storage
+     *
+     * @param string $remote_path Remote file path
+     * @return array Result with 'success' and 'body' (file contents) or 'message'
+     */
+    abstract public function download_file($remote_path);
+
+    /**
      * Get file URL
-     * 
+     *
      * @param string $remote_path Remote file path
      * @return string File URL
      */

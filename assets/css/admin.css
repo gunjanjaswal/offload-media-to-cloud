@@ -150,7 +150,8 @@
 }
 
 /* Progress Bar */
-#bulk-offload-progress {
+#bulk-offload-progress,
+#bulk-restore-progress {
     background: var(--omtc-light);
     padding: 1.5rem;
     border: 2px solid var(--omtc-border);
@@ -158,7 +159,8 @@
     margin: 1.5rem 0;
 }
 
-#bulk-offload-progress>div:first-child {
+#bulk-offload-progress>div:first-child,
+#bulk-restore-progress>div:first-child {
     background: #e2e8f0;
     height: 40px;
     border-radius: 20px;
@@ -167,7 +169,8 @@
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-#progress-bar {
+#progress-bar,
+#restore-progress-bar {
     background: linear-gradient(90deg, var(--omtc-primary), var(--omtc-secondary));
     height: 100%;
     display: flex;
@@ -181,7 +184,8 @@
     overflow: hidden;
 }
 
-#progress-bar::before {
+#progress-bar::before,
+#restore-progress-bar::before {
     content: '';
     position: absolute;
     top: 0;
@@ -202,19 +206,22 @@
     }
 }
 
-#progress-text {
+#progress-text,
+#restore-progress-text {
     font-weight: 600;
     color: var(--omtc-dark);
 }
 
-#progress-percentage {
+#progress-percentage,
+#restore-progress-percentage {
     font-weight: 700;
     color: var(--omtc-primary);
     margin-left: 0.5rem;
 }
 
 /* Error Display */
-#bulk-offload-errors {
+#bulk-offload-errors,
+#bulk-restore-errors {
     background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
     border: 2px solid var(--omtc-warning);
     padding: 1.25rem;
@@ -222,20 +229,23 @@
     margin: 1.5rem 0;
 }
 
-#bulk-offload-errors h3 {
+#bulk-offload-errors h3,
+#bulk-restore-errors h3 {
     color: #92400e;
     margin-top: 0;
     margin-bottom: 1rem;
     font-size: 1.125rem;
 }
 
-#error-list {
+#error-list,
+#restore-error-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-#error-list li {
+#error-list li,
+#restore-error-list li {
     padding: 0.875rem 1rem;
     margin: 0.5rem 0;
     background: #fff;
@@ -245,7 +255,8 @@
     transition: transform 0.2s ease;
 }
 
-#error-list li:hover {
+#error-list li:hover,
+#restore-error-list li:hover {
     transform: translateX(4px);
 }
 
@@ -416,33 +427,38 @@
 }
 
 /* Stats Display */
-#bulk-offload-stats {
+#bulk-offload-stats,
+#bulk-restore-stats {
     background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
     padding: 1.25rem;
     border-radius: 8px;
     border-left: 4px solid var(--omtc-warning);
 }
 
-#bulk-offload-stats strong {
+#bulk-offload-stats strong,
+#bulk-restore-stats strong {
     color: var(--omtc-dark);
     font-size: 1.05rem;
 }
 
-#media-count {
+#media-count,
+#restore-count {
     color: var(--omtc-primary);
     font-weight: 700;
     font-size: 1.25rem;
 }
 
 /* Complete Message */
-#bulk-offload-complete .notice {
+#bulk-offload-complete .notice,
+#bulk-restore-complete .notice {
     border-left: 4px solid var(--omtc-success);
     background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
     padding: 1rem 1.25rem;
     border-radius: 8px;
 }
 
-#bulk-offload-complete .notice p {
+#bulk-offload-complete .notice p,
+#bulk-restore-complete .notice p {
     color: #065f46;
     font-weight: 600;
     margin: 0;

@@ -50,6 +50,7 @@ class Offload_Media_To_Cloud {
         require_once OMTC_PLUGIN_DIR . 'includes/class-settings.php';
         require_once OMTC_PLUGIN_DIR . 'includes/class-uploader.php';
         require_once OMTC_PLUGIN_DIR . 'includes/class-bulk-offload.php';
+        require_once OMTC_PLUGIN_DIR . 'includes/class-bulk-restore.php';
         require_once OMTC_PLUGIN_DIR . 'includes/providers/class-provider-base.php';
         require_once OMTC_PLUGIN_DIR . 'includes/providers/class-s3-provider.php';
         require_once OMTC_PLUGIN_DIR . 'includes/providers/class-spaces-provider.php';
@@ -69,6 +70,7 @@ class Offload_Media_To_Cloud {
         add_filter('wp_get_attachment_image_src', array($this, 'filter_attachment_image_src'), 10, 4);
         add_filter('plugin_action_links_' . OMTC_PLUGIN_BASENAME, array($this, 'plugin_action_links'));
         add_filter('plugin_row_meta', array($this, 'plugin_row_meta'), 10, 2);
+        add_action('admin_notices', array($this, 'deactivation_warning_notice'));
     }
     
     /**
@@ -101,6 +103,15 @@ class Offload_Media_To_Cloud {
             'manage_options',
             'offload-bulk-offload',
             array($this, 'render_bulk_offload_page')
+        );
+
+        add_submenu_page(
+            'offload-media-to-cloud',
+            __('Restore Local', 'offload-media-to-cloud'),
+            __('Restore Local', 'offload-media-to-cloud'),
+            'manage_options',
+            'offload-bulk-restore',
+            array($this, 'render_bulk_restore_page')
         );
     }
     
@@ -154,6 +165,13 @@ class Offload_Media_To_Cloud {
     public function render_bulk_offload_page() {
         require_once OMTC_PLUGIN_DIR . 'includes/views/bulk-offload.php';
     }
+
+    /**
+     * Render bulk restore page
+     */
+    public function render_bulk_restore_page() {
+        require_once OMTC_PLUGIN_DIR . 'includes/views/bulk-restore.php';
+    }
     
     /**
      * Add action links on Plugins page
@@ -172,6 +190,55 @@ class Offload_Media_To_Cloud {
             $links[] = '<a href="https://buymeacoffee.com/gunjanjaswal" target="_blank" style="color: #ff813f; font-weight: 600;">&#9749; Buy Me a Coffee</a>';
         }
         return $links;
+    }
+
+    /**
+     * Show warning on plugins page if local files are missing
+     */
+    public function deactivation_warning_notice() {
+        $screen = get_current_screen();
+        if (!$screen || $screen->id !== 'plugins') {
+            return;
+        }
+
+        $settings = get_option('omtc_settings', array());
+        if (empty($settings['remove_local_files'])) {
+            return;
+        }
+
+        // Quick check: sample a few offloaded attachments to see if local files are missing
+        $args = array(
+            'post_type'      => 'attachment',
+            'post_status'    => 'inherit',
+            'posts_per_page' => 5,
+            'fields'         => 'ids',
+            'meta_query'     => array(
+                array(
+                    'key'     => 'omtc_remote_url',
+                    'compare' => 'EXISTS',
+                ),
+            ),
+        );
+
+        $query = new WP_Query($args);
+        $missing = false;
+        foreach ($query->posts as $id) {
+            if (!file_exists(get_attached_file($id))) {
+                $missing = true;
+                break;
+            }
+        }
+
+        if (!$missing) {
+            return;
+        }
+
+        $restore_url = admin_url('admin.php?page=offload-bulk-restore');
+        echo '<div class="notice notice-warning">';
+        echo '<p><strong>' . esc_html__('Offload Media to Cloud', 'offload-media-to-cloud') . ':</strong> ';
+        echo esc_html__('Some media files exist only in cloud storage. If you deactivate this plugin, those media URLs will break.', 'offload-media-to-cloud') . ' ';
+        echo '<a href="' . esc_url($restore_url) . '"><strong>' . esc_html__('Restore local files first', 'offload-media-to-cloud') . '</strong></a>';
+        echo '</p></div>';
     }
 
     /**

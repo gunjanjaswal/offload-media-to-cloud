@@ -48,6 +48,8 @@ Offload your WordPress media to Amazon S3, DigitalOcean Spaces, or Google Cloud 
 
 * Custom path prefix for organized cloud storage
 * Optional automatic local file removal
+* Restore local files — download cloud media back to server
+* Deactivation safety warning when local files are missing
 * Secure credential storage
 * Built-in connection testing before going live
 
@@ -158,7 +160,7 @@ Absolutely! Enter your CDN URL (CloudFront, KeyCDN, BunnyCDN, etc.) in the "CDN 
 
 = What if I deactivate the plugin? =
 
-If you've removed local files, your media will continue to be served from cloud storage URLs. If you want to restore local files, download them from your cloud storage or use a backup.
+Before deactivating, go to **Offload Media > Restore Local** to download all cloud-stored files back to your server. A warning notice on the Plugins page reminds you if local files are missing. After restoring, WordPress will serve media from your server as normal.
 
 = Does this support video and document files? =
 
@@ -204,8 +206,9 @@ Yes! All credentials are stored securely in your WordPress database. Data is tra
 
 1. Settings page — configure your cloud storage provider and credentials
 2. Bulk offload tool — migrate existing media with real-time progress tracking
-3. Connection test — verify your settings before going live
-4. Plugin action links — quick access to settings and support
+3. Restore local files — download cloud media back to server before deactivating
+4. Connection test — verify your settings before going live
+5. Plugin action links — quick access to settings and support
 
 == Changelog ==
 
@@ -218,6 +221,8 @@ Yes! All credentials are stored securely in your WordPress database. Data is tra
 * CDN integration support (CloudFront, custom domains)
 * Built-in connection testing
 * Optional local file removal after cloud upload
+* Restore local files tool — download cloud media back to server
+* Deactivation safety warning when local files are missing
 * Custom path prefix support
 * Settings and Buy Me a Coffee links on Plugins page
 

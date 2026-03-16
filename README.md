@@ -20,6 +20,8 @@ Automatically offload WordPress media to Amazon S3, DigitalOcean Spaces, or Goog
 - **CDN Support** — CloudFront, custom domains, any CDN
 - **URL Rewriting** — Seamless cloud delivery without breaking links
 - **Local File Removal** — Optionally delete local files after upload
+- **Restore Local Files** — Download cloud files back to server before deactivating
+- **Deactivation Safety** — Warning on Plugins page if local files are missing
 - **Connection Testing** — Verify credentials before going live
 
 ## Requirements
@@ -60,6 +62,10 @@ Or install directly from WordPress admin: **Plugins > Add New > Upload Plugin**
 
 Navigate to **Offload Media > Bulk Offload** to migrate all existing media files to cloud storage with real-time progress tracking.
 
+## Restore Local Files
+
+If you enabled "Remove Local Files" and want to deactivate the plugin, go to **Offload Media > Restore Local** first. This downloads all cloud-stored media back to your server so WordPress can serve them locally again. A warning notice also appears on the Plugins page if local files are missing.
+
 ## File Structure
 
 ```
@@ -75,13 +81,15 @@ offload-media-to-cloud/
 │   │   └── class-gcs-provider.php
 │   ├── views/
 │   │   ├── settings.php
-│   │   └── bulk-offload.php
+│   │   ├── bulk-offload.php
+│   │   └── bulk-restore.php
 │   ├── class-offload-media-to-cloud.php
 │   ├── class-s3-signing.php
 │   ├── class-settings.php
 │   ├── class-uploader.php
 │   ├── class-dependency-checker.php
-│   └── class-bulk-offload.php
+│   ├── class-bulk-offload.php
+│   └── class-bulk-restore.php
 ├── offload-media-to-cloud.php
 ├── readme.txt
 └── README.md
