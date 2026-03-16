@@ -5,7 +5,7 @@
  * Description: Seamlessly offload your WordPress media files to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage. Automatic sync, bulk migration, CDN support — no Composer or external SDKs required.
  * Version: 1.1.0
  * Author: Gunjan Jaswal
- * Author URI: https://www.gunjanjaswal.me
+ * Author URI: https://gunjanjaswal.me
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: offload-media-to-cloud

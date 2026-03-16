@@ -146,7 +146,7 @@ $omtc_provider = isset($omtc_settings['provider']) ? $omtc_settings['provider'] 
         <div class="omtc-developer-info">
             <div><strong><?php esc_html_e('Developer:', 'offload-media-to-cloud'); ?></strong> Gunjan Jaswal</div>
             <div><strong><?php esc_html_e('Email:', 'offload-media-to-cloud'); ?></strong> <a href="mailto:hello@gunjanjaswal.me">hello@gunjanjaswal.me</a></div>
-            <div><strong><?php esc_html_e('Website:', 'offload-media-to-cloud'); ?></strong> <a href="https://www.gunjanjaswal.me" target="_blank">www.gunjanjaswal.me</a></div>
+            <div><strong><?php esc_html_e('Website:', 'offload-media-to-cloud'); ?></strong> <a href="https://gunjanjaswal.me" target="_blank">gunjanjaswal.me</a></div>
         </div>
     </div>
 </div>

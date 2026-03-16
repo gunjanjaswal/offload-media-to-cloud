@@ -307,7 +307,7 @@ This project is licensed under the **GPLv2 or later** — see the [LICENSE](http
 
 **Gunjan Jaswal**
 
-[![Website](https://img.shields.io/badge/Website-gunjanjaswal.me-667eea?style=for-the-badge&logo=google-chrome&logoColor=white)](https://www.gunjanjaswal.me)
+[![Website](https://img.shields.io/badge/Website-gunjanjaswal.me-667eea?style=for-the-badge&logo=google-chrome&logoColor=white)](https://gunjanjaswal.me)
 [![Email](https://img.shields.io/badge/Email-hello%40gunjanjaswal.me-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:hello@gunjanjaswal.me)
 [![GitHub](https://img.shields.io/badge/GitHub-gunjanjaswal-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/gunjanjaswal)
 

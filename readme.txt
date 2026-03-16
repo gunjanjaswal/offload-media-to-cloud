@@ -288,7 +288,7 @@ This plugin does not collect or store any personal data. All cloud storage crede
 
 == Credits ==
 
-Developed by [Gunjan Jaswal](https://www.gunjanjaswal.me)
+Developed by [Gunjan Jaswal](https://gunjanjaswal.me)
 
 If you find this plugin helpful, please consider:
 

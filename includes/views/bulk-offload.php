@@ -69,7 +69,7 @@ $omtc_is_configured = !empty($omtc_settings['provider']) && !empty($omtc_setting
         <p>
             <strong><?php esc_html_e('Developer:', 'offload-media-to-cloud'); ?></strong> Gunjan Jaswal<br>
             <strong><?php esc_html_e('Email:', 'offload-media-to-cloud'); ?></strong> <a href="mailto:hello@gunjanjaswal.me">hello@gunjanjaswal.me</a><br>
-            <strong><?php esc_html_e('Website:', 'offload-media-to-cloud'); ?></strong> <a href="https://www.gunjanjaswal.me" target="_blank">www.gunjanjaswal.me</a>
+            <strong><?php esc_html_e('Website:', 'offload-media-to-cloud'); ?></strong> <a href="https://gunjanjaswal.me" target="_blank">gunjanjaswal.me</a>
         </p>
     </div>
 </div>
