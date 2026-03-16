@@ -100,31 +100,33 @@ jQuery(document).ready(function($) {
             $('#bulk-restore-errors').hide();
             $('#restore-error-list').empty();
 
-            var offset = 0;
             var processed = 0;
             var errors = [];
+            var retryCount = 0;
+            var maxRetries = 5;
 
             function restoreBatch() {
                 $.ajax({
                     url: omtc_ajax.ajax_url,
                     type: 'POST',
+                    timeout: 120000,
                     data: {
                         action: 'omtc_bulk_restore',
                         nonce: omtc_ajax.nonce,
-                        offset: offset
+                        offset: 0
                     },
                     success: function(response) {
+                        retryCount = 0;
                         if (response.success) {
                             processed += response.data.processed;
-                            offset += response.data.processed + response.data.skipped;
 
                             if (response.data.errors.length > 0) {
                                 errors = errors.concat(response.data.errors);
                             }
 
-                            var percentage = totalCount > 0 ? Math.round((processed / totalCount) * 100) : 100;
-                            $('#restore-progress-bar').css('width', Math.min(percentage, 100) + '%');
-                            $('#restore-progress-percentage').text(Math.min(percentage, 100) + '%');
+                            var percentage = totalCount > 0 ? Math.min(Math.round((processed / totalCount) * 100), 100) : 100;
+                            $('#restore-progress-bar').css('width', percentage + '%');
+                            $('#restore-progress-percentage').text(percentage + '%');
                             $('#restore-progress-text').text('Restored ' + processed + ' of ' + totalCount + ' files');
 
                             if (response.data.complete) {
@@ -148,8 +150,14 @@ jQuery(document).ready(function($) {
                         }
                     },
                     error: function() {
-                        alert('An error occurred during restore.');
-                        $button.prop('disabled', false).removeClass('disabled');
+                        retryCount++;
+                        if (retryCount <= maxRetries) {
+                            $('#restore-progress-text').text('Connection lost. Retrying (' + retryCount + '/' + maxRetries + ')...');
+                            setTimeout(restoreBatch, 3000);
+                        } else {
+                            $('#restore-progress-text').text('Stopped at ' + processed + ' of ' + totalCount + ' files. Click button to resume.');
+                            $button.prop('disabled', false).removeClass('disabled');
+                        }
                     }
                 });
             }
@@ -184,63 +192,62 @@ jQuery(document).ready(function($) {
         $('#start-bulk-offload').on('click', function() {
             var $button = $(this);
             var totalCount = parseInt($('#media-count').text());
-            
+
             if (isNaN(totalCount) || totalCount === 0) {
                 return;
             }
-            
+
             if (!confirm('This will offload ' + totalCount + ' media files. Continue?')) {
                 return;
             }
-            
+
             $button.prop('disabled', true).addClass('disabled');
             $('#bulk-offload-progress').show();
             $('#bulk-offload-errors').hide();
             $('#error-list').empty();
-            
-            var offset = 0;
+
             var processed = 0;
             var errors = [];
-            
+            var retryCount = 0;
+            var maxRetries = 5;
+
             function processBatch() {
                 $.ajax({
                     url: omtc_ajax.ajax_url,
                     type: 'POST',
+                    timeout: 120000,
                     data: {
                         action: 'omtc_bulk_offload',
                         nonce: omtc_ajax.nonce,
-                        offset: offset
+                        offset: 0
                     },
                     success: function(response) {
+                        retryCount = 0;
                         if (response.success) {
                             processed += response.data.processed;
-                            offset += response.data.processed;
-                            
+
                             if (response.data.errors.length > 0) {
                                 errors = errors.concat(response.data.errors);
                             }
-                            
-                            var percentage = Math.round((processed / totalCount) * 100);
+
+                            var percentage = totalCount > 0 ? Math.min(Math.round((processed / totalCount) * 100), 100) : 100;
                             $('#progress-bar').css('width', percentage + '%');
                             $('#progress-percentage').text(percentage + '%');
                             $('#progress-text').text('Processed ' + processed + ' of ' + totalCount + ' files');
-                            
+
                             if (response.data.complete) {
-                                // Complete
                                 $('#bulk-offload-complete').show();
                                 $('#progress-text').text('Complete! Processed ' + processed + ' files.');
-                                
+
                                 if (errors.length > 0) {
                                     $('#bulk-offload-errors').show();
                                     errors.forEach(function(error) {
                                         $('#error-list').append('<li><strong>' + error.title + '</strong>: ' + error.error + '</li>');
                                     });
                                 }
-                                
-                                // Update count
+
                                 $('#media-count').text('0 (All media files are now offloaded!)');
                             } else {
-                                // Continue with next batch
                                 processBatch();
                             }
                         } else {
@@ -249,12 +256,18 @@ jQuery(document).ready(function($) {
                         }
                     },
                     error: function() {
-                        alert('An error occurred during bulk offload.');
-                        $button.prop('disabled', false).removeClass('disabled');
+                        retryCount++;
+                        if (retryCount <= maxRetries) {
+                            $('#progress-text').text('Connection lost. Retrying (' + retryCount + '/' + maxRetries + ')...');
+                            setTimeout(processBatch, 3000);
+                        } else {
+                            $('#progress-text').text('Stopped at ' + processed + ' of ' + totalCount + ' files. Click button to resume.');
+                            $button.prop('disabled', false).removeClass('disabled');
+                        }
                     }
                 });
             }
-            
+
             processBatch();
         });
     }

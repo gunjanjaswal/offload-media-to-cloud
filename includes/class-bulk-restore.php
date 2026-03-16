@@ -68,15 +68,13 @@ class OMTC_Bulk_Restore {
             wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
         }
 
-        $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
-        $batch_size = 5; // Smaller batches since downloads are heavier
+        $batch_size = 3; // Small batches to avoid Cloudflare/server timeouts
 
         // Find offloaded attachments where local file is missing
         $args = array(
             'post_type'      => 'attachment',
             'post_status'    => 'inherit',
             'posts_per_page' => $batch_size,
-            'offset'         => $offset,
             'meta_query'     => array(
                 array(
                     'key'     => 'omtc_remote_url',
