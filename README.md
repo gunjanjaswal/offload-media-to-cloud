@@ -43,6 +43,7 @@
 - **Deactivation Warning** — Alert on Plugins page if files are cloud-only
 - **Connection Testing** — Verify credentials before going live
 - **Local File Removal** — Optional auto-delete after upload
+- **Auto-Retry** — Resumes on connection drops (up to 5 retries)
 
 </td>
 </tr>
@@ -172,7 +173,7 @@ cp -r offload-media-to-cloud /path/to/wp-content/plugins/
 ### ☁️ Bulk Offload
 > **Offload Media > Bulk Offload**
 
-Migrate your entire existing media library to cloud storage with one click. Features real-time progress tracking, batch processing, and detailed error reporting. Intelligently skips files that already exist in the cloud.
+Migrate your entire existing media library to cloud storage with one click. Features real-time progress tracking, batch processing, and detailed error reporting. Intelligently skips files that already exist in the cloud. Auto-retries on connection timeouts (e.g. Cloudflare 524 errors) so large libraries finish unattended.
 
 ### ⬇️ Restore Local
 > **Offload Media > Restore Local**
