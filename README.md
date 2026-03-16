@@ -7,13 +7,13 @@
 [![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-21759B?style=for-the-badge&logo=wordpress&logoColor=white)](https://wordpress.org)
 [![PHP](https://img.shields.io/badge/PHP-7.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
 [![License](https://img.shields.io/badge/License-GPLv2-E74C3C?style=for-the-badge)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-1.0.0-2ECC71?style=for-the-badge)](https://github.com/gunjanjaswal/offload-media-to-cloud/releases)
+[![Version](https://img.shields.io/badge/Version-1.1.0-2ECC71?style=for-the-badge)](https://github.com/gunjanjaswal/offload-media-to-cloud/releases)
 
 <br>
 
-[![Amazon S3](https://img.shields.io/badge/Amazon%20S3-FF9900?style=flat-square&logo=amazons3&logoColor=white)](#amazon-s3)
-[![DigitalOcean](https://img.shields.io/badge/DigitalOcean%20Spaces-0080FF?style=flat-square&logo=digitalocean&logoColor=white)](#digitalocean-spaces)
-[![Google Cloud](https://img.shields.io/badge/Google%20Cloud%20Storage-4285F4?style=flat-square&logo=googlecloud&logoColor=white)](#google-cloud-storage)
+[![Amazon S3](https://img.shields.io/badge/Amazon%20S3-FF9900?style=flat-square&logo=amazons3&logoColor=white)](#-amazon-s3)
+[![DigitalOcean](https://img.shields.io/badge/DigitalOcean%20Spaces-0080FF?style=flat-square&logo=digitalocean&logoColor=white)](#-digitalocean-spaces)
+[![Google Cloud](https://img.shields.io/badge/Google%20Cloud%20Storage-4285F4?style=flat-square&logo=googlecloud&logoColor=white)](#-google-cloud-storage)
 
 <br>
 
@@ -34,29 +34,26 @@
 - **Bulk Migration** — One-click offload with progress tracking
 - **Smart Re-link** — Detects existing cloud files, skips re-upload
 - **Full URL Rewriting** — Post content, srcset, thumbnails — all covered
+- **Auto-Retry** — Resumes on connection drops (up to 5 retries)
 
 </td>
 <td width="50%">
 
-### 🛡️ Safety
-- **Restore Local Files** — Download cloud files back to server
-- **Fix Permissions** — Scan & repair inaccessible (403) cloud files
-- **Fix Thumbnails** — Find & upload missing thumbnail sizes
-- **Fix URLs** — Update stale URLs after CDN/bucket/region changes
-- **Deactivation Warning** — Alert on Plugins page if files are cloud-only
-- **Connection Testing** — Verify credentials before going live
-- **Local File Removal** — Optional auto-delete after upload
-- **Auto-Retry** — Resumes on connection drops (up to 5 retries)
+### ☁️ Providers
+- **Amazon S3** — Industry-standard object storage
+- **DigitalOcean Spaces** — S3-compatible, predictable pricing
+- **Google Cloud Storage** — Google infrastructure via HMAC keys
 
 </td>
 </tr>
 <tr>
 <td>
 
-### ☁️ Providers
-- **Amazon S3** — Industry-standard object storage
-- **DigitalOcean Spaces** — S3-compatible, predictable pricing
-- **Google Cloud Storage** — Google infrastructure via HMAC keys
+### 🛡️ Safety & Recovery
+- **Restore Local Files** — Download cloud files back to server
+- **Deactivation Warning** — Alert on Plugins page if files are cloud-only
+- **Connection Testing** — Verify credentials before going live
+- **Local File Removal** — Optional auto-delete after upload
 
 </td>
 <td>
@@ -70,6 +67,43 @@
 </td>
 </tr>
 </table>
+
+---
+
+## 🔧 Repair & Diagnostic Tools
+
+> **Built-in tools to diagnose and fix common cloud storage issues — no manual database edits needed.**
+
+<table>
+<tr>
+<td width="33%" align="center">
+
+### 🔐 Fix Permissions
+Scans all offloaded files via HEAD requests. Files returning **403 AccessDenied** or other errors are listed with a one-click fix that sets `public-read` ACL or re-uploads with correct permissions.
+
+**Offload Media > Fix Permissions**
+
+</td>
+<td width="33%" align="center">
+
+### 🖼️ Fix Thumbnails
+Finds offloaded images where **thumbnail sizes are missing** from the cloud. Common after bulk offload interruptions or when WordPress generates new image sizes. Uploads missing thumbnails and stores their cloud URLs.
+
+**Offload Media > Fix Thumbnails**
+
+</td>
+<td width="33%" align="center">
+
+### 🔗 Fix URLs
+Detects when your **CDN URL, bucket, or region** settings changed but stored media URLs still point to the old location. Bulk-updates all URLs to match current settings — **no re-uploading needed**.
+
+**Offload Media > Fix URLs**
+
+</td>
+</tr>
+</table>
+
+Each tool follows a **Scan → Review → Fix** workflow with real-time progress tracking, batch processing, and detailed error reporting.
 
 ---
 
@@ -171,32 +205,16 @@ cp -r offload-media-to-cloud /path/to/wp-content/plugins/
 
 ---
 
-## 📦 Bulk Operations
+## 📦 Admin Menu Pages
 
-### ☁️ Bulk Offload
-> **Offload Media > Bulk Offload**
-
-Migrate your entire existing media library to cloud storage with one click. Features real-time progress tracking, batch processing, and detailed error reporting. Intelligently skips files that already exist in the cloud. Auto-retries on connection timeouts (e.g. Cloudflare 524 errors) so large libraries finish unattended.
-
-### ⬇️ Restore Local
-> **Offload Media > Restore Local**
-
-Download all cloud-stored media back to your server before deactivating. Only downloads files missing locally — existing files are skipped. A warning notice on the Plugins page reminds you if files are cloud-only.
-
-### 🔧 Fix Permissions
-> **Offload Media > Fix Permissions**
-
-Scans all offloaded files and checks if they are publicly accessible. Files returning 403 (AccessDenied) or other errors are listed with a one-click fix that sets public-read ACL or re-uploads if needed.
-
-### 🖼️ Fix Thumbnails
-> **Offload Media > Fix Thumbnails**
-
-Scans offloaded attachments to find missing thumbnail sizes in the cloud. Common after bulk offload interruptions or when WordPress generates new image sizes. Uploads missing thumbnails and stores their cloud URLs so all image sizes load correctly.
-
-### 🔗 Fix URLs
-> **Offload Media > Fix URLs**
-
-Detects when your CDN URL, bucket, or region settings changed but stored media URLs still point to the old location. Bulk-updates all stored URLs to match current settings — no re-uploading needed. Essential after migrating between providers or changing CDN configuration.
+| Page | Description |
+|------|-------------|
+| **Settings** | Configure provider, credentials, CDN, path prefix, local file removal |
+| **Bulk Offload** | Migrate entire media library to cloud with progress tracking & auto-retry |
+| **Restore Local** | Download cloud files back to server before deactivating |
+| **Fix Permissions** | Scan for 403/404 errors and set public-read ACL |
+| **Fix Thumbnails** | Find & upload missing thumbnail sizes to cloud |
+| **Fix URLs** | Update stale URLs after CDN/bucket/region config changes |
 
 ---
 
@@ -213,10 +231,10 @@ offload-media-to-cloud/
 │   ├── ☁️ class-uploader.php                ← Auto-sync new uploads
 │   ├── 📦 class-bulk-offload.php            ← Bulk migration
 │   ├── ⬇️ class-bulk-restore.php            ← Bulk restore
-│   ├── 🔧 class-fix-permissions.php        ← Scan & fix ACL
-│   ├── 🖼️ class-fix-thumbnails.php         ← Fix missing thumbs
-│   ├── 🔗 class-fix-urls.php               ← Fix URL mismatches
-│   ├── 🔐 class-s3-signing.php              ← AWS Sig V4 signing
+│   ├── 🔐 class-fix-permissions.php         ← Scan & fix ACL
+│   ├── 🖼️ class-fix-thumbnails.php          ← Fix missing thumbs
+│   ├── 🔗 class-fix-urls.php                ← Fix URL mismatches
+│   ├── 🔏 class-s3-signing.php              ← AWS Sig V4 signing
 │   ├── ✅ class-dependency-checker.php       ← PHP requirements
 │   │
 │   ├── 📁 providers/
@@ -229,9 +247,9 @@ offload-media-to-cloud/
 │       ├── 🖥️ settings.php                  ← Settings page UI
 │       ├── 📦 bulk-offload.php              ← Bulk offload UI
 │       ├── ⬇️ bulk-restore.php              ← Bulk restore UI
-│       ├── 🔧 fix-permissions.php          ← Fix permissions UI
-│       ├── 🖼️ fix-thumbnails.php           ← Fix thumbnails UI
-│       └── 🔗 fix-urls.php                 ← Fix URLs UI
+│       ├── 🔐 fix-permissions.php           ← Fix permissions UI
+│       ├── 🖼️ fix-thumbnails.php            ← Fix thumbnails UI
+│       └── 🔗 fix-urls.php                  ← Fix URLs UI
 │
 ├── 📁 assets/
 │   ├── 🎨 css/admin.css                     ← Modern admin styles

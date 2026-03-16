@@ -4,12 +4,12 @@ Donate link: https://buymeacoffee.com/gunjanjaswal
 Tags: s3, cloud storage, media offload, cdn, performance
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Offload your WordPress media to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage. No Composer or external SDKs required.
+Offload your WordPress media to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage. No Composer or external SDKs required. Built-in repair tools for permissions, thumbnails, and URL mismatches.
 
 == Description ==
 
@@ -35,6 +35,7 @@ Offload your WordPress media to Amazon S3, DigitalOcean Spaces, or Google Cloud 
 * One-click migration for existing media libraries
 * Real-time progress tracking with detailed statistics
 * Batch processing for optimal performance
+* Auto-retry on connection timeouts (handles Cloudflare 524 errors)
 * Comprehensive error reporting
 
 **CDN & Performance Optimization**
@@ -45,11 +46,17 @@ Offload your WordPress media to Amazon S3, DigitalOcean Spaces, or Google Cloud 
 * Global content delivery for faster load times
 * Reduced server bandwidth and hosting costs
 
-**Advanced Configuration**
+**Built-in Repair & Diagnostic Tools**
 
-* Custom path prefix for organized cloud storage
-* Optional automatic local file removal
-* Restore local files — download cloud media back to server
+* **Fix Permissions** — Scans all offloaded files and detects 403 AccessDenied errors. One-click fix sets public-read ACL or re-uploads with correct permissions. Essential after bulk operations or bucket policy changes.
+* **Fix Thumbnails** — Finds offloaded images where thumbnail sizes are missing from the cloud. Common after bulk offload interruptions or when WordPress generates new image sizes. Uploads missing thumbnails and stores their cloud URLs so all image sizes load correctly.
+* **Fix URLs** — Detects when your CDN URL, bucket, or region settings changed but stored media URLs still point to the old location. Bulk-updates all stored URLs to match current settings without re-uploading. Essential after migrating between providers or changing CDN configuration.
+
+Each repair tool follows a **Scan > Review > Fix** workflow with real-time progress tracking.
+
+**Safety & Recovery**
+
+* Restore local files — download cloud media back to server anytime
 * Deactivation safety warning when local files are missing
 * Secure credential storage
 * Built-in connection testing before going live
@@ -61,6 +68,15 @@ Offload your WordPress media to Amazon S3, DigitalOcean Spaces, or Google Cloud 
 * Works out of the box on any WordPress host
 * Uses WordPress built-in HTTP API with secure request signing
 
+= Admin Menu Pages =
+
+* **Settings** — Configure provider, credentials, CDN, path prefix, local file removal
+* **Bulk Offload** — Migrate entire media library to cloud with progress tracking and auto-retry
+* **Restore Local** — Download cloud files back to server before deactivating
+* **Fix Permissions** — Scan for 403/404 errors and set public-read ACL
+* **Fix Thumbnails** — Find and upload missing thumbnail sizes to cloud
+* **Fix URLs** — Update stale URLs after CDN/bucket/region config changes
+
 = How It Works =
 
 1. **Configure Your Provider** — Enter cloud storage credentials (access key, secret key, bucket, region)
@@ -68,6 +84,7 @@ Offload your WordPress media to Amazon S3, DigitalOcean Spaces, or Google Cloud 
 3. **Automatic Sync** — All new uploads automatically copied to cloud storage
 4. **Bulk Offload** — Migrate existing media files with one-click bulk tool
 5. **Serve from Cloud** — Media URLs automatically rewritten to cloud/CDN URLs
+6. **Diagnose & Fix** — Use repair tools if any issues arise
 
 = Supported Cloud Providers =
 
@@ -163,6 +180,22 @@ Absolutely! Enter your CDN URL (CloudFront, KeyCDN, BunnyCDN, etc.) in the "CDN 
 
 Before deactivating, go to **Offload Media > Restore Local** to download all cloud-stored files back to your server. A warning notice on the Plugins page reminds you if local files are missing. After restoring, WordPress will serve media from your server as normal.
 
+= Some images show 403 AccessDenied errors after bulk offload. How do I fix this? =
+
+Go to **Offload Media > Fix Permissions**. This tool scans all offloaded files and detects which ones are returning errors. Click "Fix All Broken Files" to set the correct public-read ACL on each file.
+
+= Some image sizes (thumbnails) are not loading from the cloud. How do I fix this? =
+
+Go to **Offload Media > Fix Thumbnails**. This tool scans all offloaded attachments and finds which thumbnail sizes are missing from the cloud. Click "Fix Missing Thumbnails" to upload them.
+
+= I changed my CDN URL / bucket / region and now images are broken. How do I fix this? =
+
+Go to **Offload Media > Fix URLs**. This tool detects when stored URLs don't match your current settings. Click "Fix All Mismatched URLs" to update them — no re-uploading needed.
+
+= The bulk offload stops or times out midway. What do I do? =
+
+The plugin has built-in auto-retry (up to 5 attempts per batch). If it still fails, just click "Start Bulk Offload" again — it picks up where it left off since already-offloaded files are automatically skipped.
+
 = Does this support video and document files? =
 
 Yes! The plugin supports all file types that WordPress allows in the media library, including images, videos, documents, audio files, and archives.
@@ -191,27 +224,41 @@ Most small to medium websites pay less than $5-10/month.
 
 = Can I migrate between cloud providers? =
 
-Yes, you can change providers at any time. Update your settings and use the bulk offload tool to re-upload media to the new provider.
+Yes, you can change providers at any time. Update your settings, use **Fix URLs** to update stored URLs, and use the bulk offload tool to re-upload media to the new provider.
 
 = Is my data secure? =
 
-Yes! All credentials are stored securely in your WordPress database. Data is transmitted over HTTPS. Request signing ensures credentials are never sent in plain text.
+Yes! All credentials are stored securely in your WordPress database. Data is transmitted over HTTPS. AWS Signature V4 request signing ensures credentials are never sent in plain text. All admin actions require `manage_options` capability.
 
 = How do I get support? =
 
 * Visit the WordPress.org support forum
 * Contact the developer: hello@gunjanjaswal.me
-* Report bugs on [GitHub](https://github.com/gunjanjaswal/Offload-Images-JS-CSS)
+* Report bugs on [GitHub](https://github.com/gunjanjaswal/offload-media-to-cloud)
 
 == Screenshots ==
 
 1. Settings page — configure your cloud storage provider and credentials
 2. Bulk offload tool — migrate existing media with real-time progress tracking
 3. Restore local files — download cloud media back to server before deactivating
-4. Connection test — verify your settings before going live
-5. Plugin action links — quick access to settings and support
+4. Fix permissions — scan and repair 403 AccessDenied cloud files
+5. Fix thumbnails — find and upload missing thumbnail sizes
+6. Fix URLs — update stale URLs after config changes
+7. Connection test — verify your settings before going live
+8. Plugin action links — quick access to settings and support
 
 == Changelog ==
+
+= 1.1.0 =
+* New: Fix Permissions tool — scan and repair 403 AccessDenied cloud files
+* New: Fix Thumbnails tool — find and upload missing thumbnail sizes to cloud
+* New: Fix URLs tool — bulk-update stale URLs after CDN/bucket/region changes
+* New: Auto-retry on connection timeouts (up to 5 retries per batch)
+* New: Smart re-link — detects existing cloud files and skips re-upload
+* New: Set public-read ACL when re-linking existing cloud files
+* Fix: Bulk offload offset logic causing premature "completed" status
+* Fix: Batch size reduced to avoid Cloudflare 524 timeout errors
+* Fix: Success message no longer persists after page reload
 
 = 1.0.0 =
 * Initial release
@@ -228,6 +275,9 @@ Yes! All credentials are stored securely in your WordPress database. Data is tra
 * Settings and Buy Me a Coffee links on Plugins page
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+New repair tools: Fix Permissions, Fix Thumbnails, and Fix URLs. Auto-retry on connection drops. Recommended update for all users.
 
 = 1.0.0 =
 Initial release. Install and activate — no additional setup required.

@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: Offload Media to Cloud
- * Plugin URI: https://github.com/gunjanjaswal/Offload-Images-JS-CSS
+ * Plugin URI: https://github.com/gunjanjaswal/offload-media-to-cloud
  * Description: Seamlessly offload your WordPress media files to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage. Automatic sync, bulk migration, CDN support — no Composer or external SDKs required.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Gunjan Jaswal
  * Author URI: https://www.gunjanjaswal.me
  * License: GPL v2 or later
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('OMTC_VERSION', '1.0.0');
+define('OMTC_VERSION', '1.1.0');
 define('OMTC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('OMTC_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('OMTC_PLUGIN_BASENAME', plugin_basename(__FILE__));
