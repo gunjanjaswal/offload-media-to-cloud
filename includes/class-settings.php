@@ -13,16 +13,8 @@ class OMTC_Settings {
     
     public function __construct() {
         $this->options = get_option('omtc_settings', array());
-        add_action('admin_init', array($this, 'register_settings'));
         add_action('wp_ajax_omtc_save_settings', array($this, 'save_settings_ajax'));
         add_action('wp_ajax_omtc_test_connection', array($this, 'test_connection_ajax'));
-    }
-    
-    /**
-     * Register settings
-     */
-    public function register_settings() {
-        register_setting('omtc_settings_group', 'omtc_settings', array($this, 'sanitize_settings'));
     }
     
     /**

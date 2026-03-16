@@ -155,8 +155,8 @@ class Offload_Media_To_Cloud {
             return;
         }
         
-        wp_enqueue_style('omtc-admin', OMTC_PLUGIN_URL . 'assets/css/admin.css', array(), OMTC_VERSION);
-        wp_enqueue_script('omtc-admin', OMTC_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), OMTC_VERSION, true);
+        wp_enqueue_style('omtc-admin', OMTC_PLUGIN_URL . 'assets/css/admin.css', array(), OMTC_VERSION . '.1');
+        wp_enqueue_script('omtc-admin', OMTC_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), OMTC_VERSION . '.1', true);
         
         wp_localize_script('omtc-admin', 'omtc_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),

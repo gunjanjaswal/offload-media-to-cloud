@@ -15,8 +15,7 @@ $omtc_provider = isset($omtc_settings['provider']) ? $omtc_settings['provider'] 
     <h1>⚡ <?php esc_html_e('Offload Media Settings', 'offload-media-to-cloud'); ?></h1>
     
     <div class="omtc-settings-container">
-        <form id="omtc-settings-form" method="post" action="options.php">
-            <?php settings_fields('omtc_settings_group'); ?>
+        <form id="omtc-settings-form" method="post">
             
             <table class="form-table">
                 <tr>
