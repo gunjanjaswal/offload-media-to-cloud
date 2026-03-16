@@ -118,30 +118,46 @@ class OMTC_Bulk_Offload {
             return array('success' => false, 'message' => __('File not found', 'offload-media-to-cloud'));
         }
         
-        // Upload main file
+        // Check if file already exists in cloud (e.g. after restore + reactivate)
         $remote_path = $this->get_remote_path($file_path, $settings);
-        $result = $provider->upload_file($file_path, $remote_path);
-        
-        if (!$result['success']) {
-            return $result;
+        $already_exists = $provider->remote_file_exists($remote_path);
+
+        if ($already_exists) {
+            // File already in cloud — just link the URL, skip upload
+            $url = $provider->get_file_url($remote_path);
+        } else {
+            // Upload main file
+            $result = $provider->upload_file($file_path, $remote_path);
+
+            if (!$result['success']) {
+                return $result;
+            }
+
+            $url = $result['url'];
         }
-        
-        update_post_meta($attachment_id, 'omtc_remote_url', $result['url']);
+
+        update_post_meta($attachment_id, 'omtc_remote_url', $url);
         update_post_meta($attachment_id, 'omtc_remote_path', $remote_path);
-        
+
         // Upload thumbnails
         $metadata = wp_get_attachment_metadata($attachment_id);
         if (isset($metadata['sizes']) && is_array($metadata['sizes'])) {
             $base_dir = dirname($file_path);
-            
+
             foreach ($metadata['sizes'] as $size => $size_data) {
                 $thumb_path = $base_dir . '/' . $size_data['file'];
                 if (file_exists($thumb_path)) {
                     $thumb_remote_path = $this->get_remote_path($thumb_path, $settings);
-                    $thumb_result = $provider->upload_file($thumb_path, $thumb_remote_path);
-                    
-                    if ($thumb_result['success']) {
-                        update_post_meta($attachment_id, 'omtc_remote_url_' . $size, $thumb_result['url']);
+
+                    if ($provider->remote_file_exists($thumb_remote_path)) {
+                        $thumb_url = $provider->get_file_url($thumb_remote_path);
+                    } else {
+                        $thumb_result = $provider->upload_file($thumb_path, $thumb_remote_path);
+                        $thumb_url = $thumb_result['success'] ? $thumb_result['url'] : '';
+                    }
+
+                    if ($thumb_url) {
+                        update_post_meta($attachment_id, 'omtc_remote_url_' . $size, $thumb_url);
                     }
                 }
             }

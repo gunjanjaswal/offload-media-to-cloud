@@ -48,6 +48,14 @@ abstract class OMTC_Provider_Base {
     abstract public function download_file($remote_path);
 
     /**
+     * Check if a file exists in cloud storage
+     *
+     * @param string $remote_path Remote file path
+     * @return bool True if file exists
+     */
+    abstract public function remote_file_exists($remote_path);
+
+    /**
      * Get file URL
      *
      * @param string $remote_path Remote file path

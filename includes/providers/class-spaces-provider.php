@@ -137,6 +137,31 @@ class OMTC_Spaces_Provider extends OMTC_Provider_Base {
         }
     }
 
+    public function remote_file_exists($remote_path) {
+        try {
+            $url = $this->get_endpoint($remote_path);
+
+            $response = OMTC_S3_Signing::request(
+                'HEAD',
+                $url,
+                array(),
+                '',
+                $this->settings['access_key'],
+                $this->settings['secret_key'],
+                $this->settings['region']
+            );
+
+            if (is_wp_error($response)) {
+                return false;
+            }
+
+            $code = wp_remote_retrieve_response_code($response);
+            return ($code >= 200 && $code < 300);
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
     public function get_file_url($remote_path) {
         if (!empty($this->settings['cdn_url'])) {
             return trailingslashit($this->settings['cdn_url']) . $remote_path;
