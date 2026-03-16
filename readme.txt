@@ -9,7 +9,7 @@ Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Offload your WordPress media to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage. No Composer or external SDKs required. Built-in repair tools for permissions, thumbnails, and URL mismatches.
+Offload WordPress media to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage. No SDK required. Built-in repair tools.
 
 == Description ==
 
