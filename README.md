@@ -18,7 +18,8 @@ Automatically offload WordPress media to Amazon S3, DigitalOcean Spaces, or Goog
 - **Auto Sync** — New uploads automatically copied to cloud storage
 - **Bulk Migration** — One-click offload for existing media with progress tracking
 - **CDN Support** — CloudFront, custom domains, any CDN
-- **URL Rewriting** — Seamless cloud delivery without breaking links
+- **Full URL Rewriting** — Rewrites all image URLs including srcset, post content, and thumbnails
+- **Smart Re-link** — Bulk offload detects files already in cloud and links without re-uploading
 - **Local File Removal** — Optionally delete local files after upload
 - **Restore Local Files** — Download cloud files back to server before deactivating
 - **Deactivation Safety** — Warning on Plugins page if local files are missing

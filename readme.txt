@@ -40,7 +40,8 @@ Offload your WordPress media to Amazon S3, DigitalOcean Spaces, or Google Cloud 
 **CDN & Performance Optimization**
 
 * Seamless CloudFront and custom CDN integration
-* Automatic URL rewriting for cloud delivery
+* Full URL rewriting — post content, srcset, and all image sizes
+* Smart re-link — detects files already in cloud, skips re-upload
 * Global content delivery for faster load times
 * Reduced server bandwidth and hosting costs
 
