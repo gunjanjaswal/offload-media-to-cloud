@@ -41,6 +41,8 @@
 ### 🛡️ Safety
 - **Restore Local Files** — Download cloud files back to server
 - **Fix Permissions** — Scan & repair inaccessible (403) cloud files
+- **Fix Thumbnails** — Find & upload missing thumbnail sizes
+- **Fix URLs** — Update stale URLs after CDN/bucket/region changes
 - **Deactivation Warning** — Alert on Plugins page if files are cloud-only
 - **Connection Testing** — Verify credentials before going live
 - **Local File Removal** — Optional auto-delete after upload
@@ -186,6 +188,16 @@ Download all cloud-stored media back to your server before deactivating. Only do
 
 Scans all offloaded files and checks if they are publicly accessible. Files returning 403 (AccessDenied) or other errors are listed with a one-click fix that sets public-read ACL or re-uploads if needed.
 
+### 🖼️ Fix Thumbnails
+> **Offload Media > Fix Thumbnails**
+
+Scans offloaded attachments to find missing thumbnail sizes in the cloud. Common after bulk offload interruptions or when WordPress generates new image sizes. Uploads missing thumbnails and stores their cloud URLs so all image sizes load correctly.
+
+### 🔗 Fix URLs
+> **Offload Media > Fix URLs**
+
+Detects when your CDN URL, bucket, or region settings changed but stored media URLs still point to the old location. Bulk-updates all stored URLs to match current settings — no re-uploading needed. Essential after migrating between providers or changing CDN configuration.
+
 ---
 
 ## 🏗️ Architecture
@@ -202,6 +214,8 @@ offload-media-to-cloud/
 │   ├── 📦 class-bulk-offload.php            ← Bulk migration
 │   ├── ⬇️ class-bulk-restore.php            ← Bulk restore
 │   ├── 🔧 class-fix-permissions.php        ← Scan & fix ACL
+│   ├── 🖼️ class-fix-thumbnails.php         ← Fix missing thumbs
+│   ├── 🔗 class-fix-urls.php               ← Fix URL mismatches
 │   ├── 🔐 class-s3-signing.php              ← AWS Sig V4 signing
 │   ├── ✅ class-dependency-checker.php       ← PHP requirements
 │   │
@@ -215,7 +229,9 @@ offload-media-to-cloud/
 │       ├── 🖥️ settings.php                  ← Settings page UI
 │       ├── 📦 bulk-offload.php              ← Bulk offload UI
 │       ├── ⬇️ bulk-restore.php              ← Bulk restore UI
-│       └── 🔧 fix-permissions.php          ← Fix permissions UI
+│       ├── 🔧 fix-permissions.php          ← Fix permissions UI
+│       ├── 🖼️ fix-thumbnails.php           ← Fix thumbnails UI
+│       └── 🔗 fix-urls.php                 ← Fix URLs UI
 │
 ├── 📁 assets/
 │   ├── 🎨 css/admin.css                     ← Modern admin styles

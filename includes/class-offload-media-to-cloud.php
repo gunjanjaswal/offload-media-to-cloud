@@ -52,6 +52,8 @@ class Offload_Media_To_Cloud {
         require_once OMTC_PLUGIN_DIR . 'includes/class-bulk-offload.php';
         require_once OMTC_PLUGIN_DIR . 'includes/class-bulk-restore.php';
         require_once OMTC_PLUGIN_DIR . 'includes/class-fix-permissions.php';
+        require_once OMTC_PLUGIN_DIR . 'includes/class-fix-thumbnails.php';
+        require_once OMTC_PLUGIN_DIR . 'includes/class-fix-urls.php';
         require_once OMTC_PLUGIN_DIR . 'includes/providers/class-provider-base.php';
         require_once OMTC_PLUGIN_DIR . 'includes/providers/class-s3-provider.php';
         require_once OMTC_PLUGIN_DIR . 'includes/providers/class-spaces-provider.php';
@@ -124,6 +126,24 @@ class Offload_Media_To_Cloud {
             'manage_options',
             'offload-fix-permissions',
             array($this, 'render_fix_permissions_page')
+        );
+
+        add_submenu_page(
+            'offload-media-to-cloud',
+            __('Fix Thumbnails', 'offload-media-to-cloud'),
+            __('Fix Thumbnails', 'offload-media-to-cloud'),
+            'manage_options',
+            'offload-fix-thumbnails',
+            array($this, 'render_fix_thumbnails_page')
+        );
+
+        add_submenu_page(
+            'offload-media-to-cloud',
+            __('Fix URLs', 'offload-media-to-cloud'),
+            __('Fix URLs', 'offload-media-to-cloud'),
+            'manage_options',
+            'offload-fix-urls',
+            array($this, 'render_fix_urls_page')
         );
     }
     
@@ -266,6 +286,20 @@ class Offload_Media_To_Cloud {
      */
     public function render_fix_permissions_page() {
         require_once OMTC_PLUGIN_DIR . 'includes/views/fix-permissions.php';
+    }
+
+    /**
+     * Render fix thumbnails page
+     */
+    public function render_fix_thumbnails_page() {
+        require_once OMTC_PLUGIN_DIR . 'includes/views/fix-thumbnails.php';
+    }
+
+    /**
+     * Render fix URLs page
+     */
+    public function render_fix_urls_page() {
+        require_once OMTC_PLUGIN_DIR . 'includes/views/fix-urls.php';
     }
 
     /**

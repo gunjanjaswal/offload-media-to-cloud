@@ -375,7 +375,7 @@ jQuery(document).ready(function($) {
             scanBatch();
         });
 
-        // Fix broken files
+        // Fix broken permission files
         $('#start-fix').on('click', function() {
             var $button = $(this);
 
@@ -452,6 +452,179 @@ jQuery(document).ready(function($) {
             }
 
             fixBatch();
+        });
+    }
+
+    // Fix Missing Thumbnails functionality
+    if ($('#start-thumb-scan').length) {
+
+        // Reset UI state on page load
+        $('#thumb-scan-progress').hide();
+        $('#thumb-scan-results').hide();
+        $('#thumb-fix-progress').hide();
+        $('#thumb-fix-complete').hide();
+        $('#thumb-fix-errors').hide();
+        $('#start-thumb-fix').hide();
+
+        var brokenThumbs = [];
+
+        // Scan for missing thumbnails
+        $('#start-thumb-scan').on('click', function() {
+            var $button = $(this);
+            $button.prop('disabled', true).text('Scanning...');
+            $('#thumb-scan-progress').show();
+            $('#thumb-scan-results').hide();
+            $('#start-thumb-fix').hide();
+            $('#thumb-fix-complete').hide();
+            $('#thumb-fix-errors').hide();
+            brokenThumbs = [];
+            $('#thumb-broken-files-list').empty();
+
+            var offset = 0;
+            var retryCount = 0;
+            var maxRetries = 5;
+
+            function scanThumbBatch() {
+                $.ajax({
+                    url: omtc_ajax.ajax_url,
+                    type: 'POST',
+                    timeout: 120000,
+                    data: {
+                        action: 'omtc_scan_thumbnails',
+                        nonce: omtc_ajax.nonce,
+                        offset: offset
+                    },
+                    success: function(response) {
+                        retryCount = 0;
+                        if (response.success) {
+                            offset = response.data.scanned;
+
+                            if (response.data.broken.length > 0) {
+                                brokenThumbs = brokenThumbs.concat(response.data.broken);
+                                response.data.broken.forEach(function(file) {
+                                    $('#thumb-broken-files-list').append(
+                                        '<tr><td>' + file.id + '</td><td>' + file.title + '</td><td><code>' + file.missing_sizes.join(', ') + '</code></td></tr>'
+                                    );
+                                });
+                            }
+
+                            var percentage = response.data.total > 0 ? Math.min(Math.round((offset / response.data.total) * 100), 100) : 100;
+                            $('#thumb-scan-progress-bar').css('width', percentage + '%');
+                            $('#thumb-scan-progress-percentage').text(percentage + '%');
+                            $('#thumb-scan-progress-text').text('Scanned ' + offset + ' of ' + response.data.total + ' attachments (' + brokenThumbs.length + ' with missing thumbnails)');
+
+                            if (response.data.complete) {
+                                $('#thumb-scan-results').show();
+                                if (brokenThumbs.length === 0) {
+                                    $('#thumb-scan-results-ok').show();
+                                    $('#thumb-scan-results-broken').hide();
+                                } else {
+                                    $('#thumb-scan-results-ok').hide();
+                                    $('#thumb-scan-results-broken').show();
+                                    $('#thumb-broken-count-text').text(brokenThumbs.length + ' attachment(s) have missing thumbnail URLs');
+                                    $('#start-thumb-fix').show();
+                                }
+                                $button.prop('disabled', false).text('Scan Thumbnails');
+                            } else {
+                                scanThumbBatch();
+                            }
+                        } else {
+                            alert('Error: ' + response.data.message);
+                            $button.prop('disabled', false).text('Scan Thumbnails');
+                        }
+                    },
+                    error: function() {
+                        retryCount++;
+                        if (retryCount <= maxRetries) {
+                            $('#thumb-scan-progress-text').text('Connection lost. Retrying (' + retryCount + '/' + maxRetries + ')...');
+                            setTimeout(scanThumbBatch, 3000);
+                        } else {
+                            $button.prop('disabled', false).text('Scan Thumbnails');
+                        }
+                    }
+                });
+            }
+
+            scanThumbBatch();
+        });
+
+        // Fix missing thumbnails
+        $('#start-thumb-fix').on('click', function() {
+            var $button = $(this);
+
+            if (brokenThumbs.length === 0) {
+                return;
+            }
+
+            if (!confirm('This will upload missing thumbnails for ' + brokenThumbs.length + ' attachment(s). Continue?')) {
+                return;
+            }
+
+            $button.prop('disabled', true);
+            $('#thumb-fix-progress').show();
+            $('#thumb-fix-complete').hide();
+            $('#thumb-fix-errors').hide();
+            $('#thumb-fix-error-list').empty();
+
+            var totalToFix = brokenThumbs.length;
+            var fixedTotal = 0;
+            var fixErrors = [];
+            var batchSize = 3;
+            var batchIndex = 0;
+
+            function fixThumbBatch() {
+                var batch = brokenThumbs.slice(batchIndex, batchIndex + batchSize);
+                if (batch.length === 0) {
+                    // Done
+                    $('#thumb-fix-complete').show();
+                    $('#thumb-fix-complete-text').text('Fixed ' + fixedTotal + ' of ' + totalToFix + ' attachments.');
+                    if (fixErrors.length > 0) {
+                        $('#thumb-fix-errors').show();
+                        fixErrors.forEach(function(err) {
+                            $('#thumb-fix-error-list').append('<li>ID ' + err.id + ': ' + err.error + '</li>');
+                        });
+                    }
+                    $button.hide();
+                    return;
+                }
+
+                var ids = batch.map(function(f) { return f.id; });
+
+                $.ajax({
+                    url: omtc_ajax.ajax_url,
+                    type: 'POST',
+                    timeout: 120000,
+                    data: {
+                        action: 'omtc_fix_thumbnails',
+                        nonce: omtc_ajax.nonce,
+                        ids: ids
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            fixedTotal += response.data.fixed;
+                            if (response.data.errors.length > 0) {
+                                fixErrors = fixErrors.concat(response.data.errors);
+                            }
+
+                            batchIndex += batchSize;
+                            var percentage = Math.min(Math.round((batchIndex / totalToFix) * 100), 100);
+                            $('#thumb-fix-progress-bar').css('width', percentage + '%');
+                            $('#thumb-fix-progress-text').text('Fixed ' + fixedTotal + ' of ' + totalToFix + ' attachments...');
+
+                            fixThumbBatch();
+                        } else {
+                            alert('Error: ' + response.data.message);
+                            $button.prop('disabled', false);
+                        }
+                    },
+                    error: function() {
+                        alert('Connection error during fix.');
+                        $button.prop('disabled', false);
+                    }
+                });
+            }
+
+            fixThumbBatch();
         });
     }
 });
