@@ -87,14 +87,14 @@ class OMTC_Settings {
         check_ajax_referer('omtc_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'Offload-Media-to-Cloud')));
         }
         
-        $settings = $_POST['settings'];
+        $settings = isset($_POST['settings']) ? wp_unslash($_POST['settings']) : array();
         $sanitized = $this->sanitize_settings($settings);
         update_option('omtc_settings', $sanitized);
         
-        wp_send_json_success(array('message' => __('Settings saved successfully', 'offload-media-to-cloud')));
+        wp_send_json_success(array('message' => __('Settings saved successfully', 'Offload-Media-to-Cloud')));
     }
     
     /**
@@ -104,23 +104,23 @@ class OMTC_Settings {
         check_ajax_referer('omtc_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'Offload-Media-to-Cloud')));
         }
         
-        $provider = sanitize_text_field($_POST['provider']);
-        $credentials = $_POST['credentials'];
+        $provider = isset($_POST['provider']) ? sanitize_text_field(wp_unslash($_POST['provider'])) : '';
+        $credentials = isset($_POST['credentials']) ? wp_unslash($_POST['credentials']) : array();
         
         // Get provider instance
         $provider_class = 'OMTC_' . ucfirst($provider) . '_Provider';
         if (!class_exists($provider_class)) {
-            wp_send_json_error(array('message' => __('Invalid provider', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Invalid provider', 'Offload-Media-to-Cloud')));
         }
         
         $provider_instance = new $provider_class($credentials);
         $result = $provider_instance->test_connection();
         
         if ($result['success']) {
-            wp_send_json_success(array('message' => __('Connection successful!', 'offload-media-to-cloud')));
+            wp_send_json_success(array('message' => __('Connection successful!', 'Offload-Media-to-Cloud')));
         } else {
             wp_send_json_error(array('message' => $result['message']));
         }

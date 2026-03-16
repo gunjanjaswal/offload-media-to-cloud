@@ -8,7 +8,7 @@
  * Author URI: https://www.gunjanjaswal.me
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: offload-media-to-cloud
+ * Text Domain: Offload-Media-to-Cloud
  * Domain Path: /languages
  */
 

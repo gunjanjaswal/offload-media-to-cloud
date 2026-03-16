@@ -21,7 +21,7 @@ class OMTC_Bulk_Restore {
         check_ajax_referer('omtc_ajax_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'Offload-Media-to-Cloud')));
         }
 
         $count = $this->get_restore_count();
@@ -65,7 +65,7 @@ class OMTC_Bulk_Restore {
         check_ajax_referer('omtc_ajax_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'Offload-Media-to-Cloud')));
         }
 
         $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
@@ -95,7 +95,7 @@ class OMTC_Bulk_Restore {
             $provider = $this->get_provider($settings);
 
             if (!$provider) {
-                wp_send_json_error(array('message' => __('Provider not configured', 'offload-media-to-cloud')));
+                wp_send_json_error(array('message' => __('Provider not configured', 'Offload-Media-to-Cloud')));
             }
 
             while ($query->have_posts()) {
@@ -143,7 +143,7 @@ class OMTC_Bulk_Restore {
         $remote_path = get_post_meta($attachment_id, 'omtc_remote_path', true);
 
         if (empty($remote_path)) {
-            return array('success' => false, 'message' => __('No remote path stored', 'offload-media-to-cloud'));
+            return array('success' => false, 'message' => __('No remote path stored', 'Offload-Media-to-Cloud'));
         }
 
         // Ensure local directory exists
@@ -159,7 +159,7 @@ class OMTC_Bulk_Restore {
         }
 
         if (file_put_contents($file_path, $result['body']) === false) {
-            return array('success' => false, 'message' => __('Failed to write local file', 'offload-media-to-cloud'));
+            return array('success' => false, 'message' => __('Failed to write local file', 'Offload-Media-to-Cloud'));
         }
 
         // Download thumbnails

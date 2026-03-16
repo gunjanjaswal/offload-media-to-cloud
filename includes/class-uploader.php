@@ -133,7 +133,7 @@ class OMTC_Uploader {
      */
     private function get_remote_path_from_url($url) {
         $bucket = $this->settings['bucket'];
-        $parts = parse_url($url);
+        $parts = wp_parse_url($url);
         $path = ltrim($parts['path'], '/');
         
         // Remove bucket name if present in path
@@ -149,7 +149,7 @@ class OMTC_Uploader {
      */
     private function remove_local_file($attachment_id, $file_path, $metadata) {
         if (file_exists($file_path)) {
-            @unlink($file_path);
+            wp_delete_file($file_path);
         }
         
         // Remove thumbnails
@@ -158,7 +158,7 @@ class OMTC_Uploader {
             foreach ($metadata['sizes'] as $size_data) {
                 $thumb_path = $base_dir . '/' . $size_data['file'];
                 if (file_exists($thumb_path)) {
-                    @unlink($thumb_path);
+                    wp_delete_file($thumb_path);
                 }
             }
         }

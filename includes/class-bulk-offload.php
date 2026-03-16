@@ -21,7 +21,7 @@ class OMTC_Bulk_Offload {
         check_ajax_referer('omtc_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'Offload-Media-to-Cloud')));
         }
         
         $args = array(
@@ -49,7 +49,7 @@ class OMTC_Bulk_Offload {
         check_ajax_referer('omtc_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'Offload-Media-to-Cloud')));
         }
         
         $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
@@ -77,7 +77,7 @@ class OMTC_Bulk_Offload {
             $provider = $this->get_provider($settings);
             
             if (!$provider) {
-                wp_send_json_error(array('message' => __('Provider not configured', 'offload-media-to-cloud')));
+                wp_send_json_error(array('message' => __('Provider not configured', 'Offload-Media-to-Cloud')));
             }
             
             while ($query->have_posts()) {
@@ -115,7 +115,7 @@ class OMTC_Bulk_Offload {
         $file_path = get_attached_file($attachment_id);
         
         if (!file_exists($file_path)) {
-            return array('success' => false, 'message' => __('File not found', 'offload-media-to-cloud'));
+            return array('success' => false, 'message' => __('File not found', 'Offload-Media-to-Cloud'));
         }
         
         // Upload main file
@@ -187,7 +187,7 @@ class OMTC_Bulk_Offload {
      */
     private function remove_local_file($file_path, $metadata) {
         if (file_exists($file_path)) {
-            @unlink($file_path);
+            wp_delete_file($file_path);
         }
         
         // Remove thumbnails
@@ -196,7 +196,7 @@ class OMTC_Bulk_Offload {
             foreach ($metadata['sizes'] as $size_data) {
                 $thumb_path = $base_dir . '/' . $size_data['file'];
                 if (file_exists($thumb_path)) {
-                    @unlink($thumb_path);
+                    wp_delete_file($thumb_path);
                 }
             }
         }

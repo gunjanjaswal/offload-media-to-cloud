@@ -3,7 +3,7 @@ Contributors: gunjanjaswal
 Donate link: https://buymeacoffee.com/gunjanjaswal
 Tags: s3, cloud storage, media offload, cdn, performance
 Requires at least: 5.0
-Tested up to: 6.7
+Tested up to: 6.9
 Stable tag: 1.0.0
 Requires PHP: 7.2
 License: GPLv2 or later
