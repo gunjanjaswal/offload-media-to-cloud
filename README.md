@@ -40,6 +40,7 @@
 
 ### 🛡️ Safety
 - **Restore Local Files** — Download cloud files back to server
+- **Fix Permissions** — Scan & repair inaccessible (403) cloud files
 - **Deactivation Warning** — Alert on Plugins page if files are cloud-only
 - **Connection Testing** — Verify credentials before going live
 - **Local File Removal** — Optional auto-delete after upload
@@ -180,6 +181,11 @@ Migrate your entire existing media library to cloud storage with one click. Feat
 
 Download all cloud-stored media back to your server before deactivating. Only downloads files missing locally — existing files are skipped. A warning notice on the Plugins page reminds you if files are cloud-only.
 
+### 🔧 Fix Permissions
+> **Offload Media > Fix Permissions**
+
+Scans all offloaded files and checks if they are publicly accessible. Files returning 403 (AccessDenied) or other errors are listed with a one-click fix that sets public-read ACL or re-uploads if needed.
+
 ---
 
 ## 🏗️ Architecture
@@ -195,6 +201,7 @@ offload-media-to-cloud/
 │   ├── ☁️ class-uploader.php                ← Auto-sync new uploads
 │   ├── 📦 class-bulk-offload.php            ← Bulk migration
 │   ├── ⬇️ class-bulk-restore.php            ← Bulk restore
+│   ├── 🔧 class-fix-permissions.php        ← Scan & fix ACL
 │   ├── 🔐 class-s3-signing.php              ← AWS Sig V4 signing
 │   ├── ✅ class-dependency-checker.php       ← PHP requirements
 │   │
@@ -207,7 +214,8 @@ offload-media-to-cloud/
 │   └── 📁 views/
 │       ├── 🖥️ settings.php                  ← Settings page UI
 │       ├── 📦 bulk-offload.php              ← Bulk offload UI
-│       └── ⬇️ bulk-restore.php              ← Bulk restore UI
+│       ├── ⬇️ bulk-restore.php              ← Bulk restore UI
+│       └── 🔧 fix-permissions.php          ← Fix permissions UI
 │
 ├── 📁 assets/
 │   ├── 🎨 css/admin.css                     ← Modern admin styles

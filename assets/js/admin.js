@@ -281,4 +281,177 @@ jQuery(document).ready(function($) {
             processBatch();
         });
     }
+
+    // Fix Permissions functionality
+    if ($('#start-scan').length) {
+
+        // Reset UI state on page load
+        $('#fix-scan-progress').hide();
+        $('#fix-scan-results').hide();
+        $('#fix-progress').hide();
+        $('#fix-complete').hide();
+        $('#fix-errors').hide();
+        $('#start-fix').hide();
+
+        var brokenFiles = [];
+
+        // Scan for broken files
+        $('#start-scan').on('click', function() {
+            var $button = $(this);
+            $button.prop('disabled', true).text('Scanning...');
+            $('#fix-scan-progress').show();
+            $('#fix-scan-results').hide();
+            $('#start-fix').hide();
+            $('#fix-complete').hide();
+            $('#fix-errors').hide();
+            brokenFiles = [];
+            $('#broken-files-list').empty();
+
+            var offset = 0;
+            var retryCount = 0;
+            var maxRetries = 5;
+
+            function scanBatch() {
+                $.ajax({
+                    url: omtc_ajax.ajax_url,
+                    type: 'POST',
+                    timeout: 120000,
+                    data: {
+                        action: 'omtc_scan_permissions',
+                        nonce: omtc_ajax.nonce,
+                        offset: offset
+                    },
+                    success: function(response) {
+                        retryCount = 0;
+                        if (response.success) {
+                            offset = response.data.scanned;
+
+                            if (response.data.broken.length > 0) {
+                                brokenFiles = brokenFiles.concat(response.data.broken);
+                                response.data.broken.forEach(function(file) {
+                                    $('#broken-files-list').append(
+                                        '<tr><td>' + file.id + '</td><td>' + file.title + '</td><td><code>' + file.error + '</code></td></tr>'
+                                    );
+                                });
+                            }
+
+                            var percentage = response.data.total > 0 ? Math.min(Math.round((offset / response.data.total) * 100), 100) : 100;
+                            $('#scan-progress-bar').css('width', percentage + '%');
+                            $('#scan-progress-percentage').text(percentage + '%');
+                            $('#scan-progress-text').text('Scanned ' + offset + ' of ' + response.data.total + ' files (' + brokenFiles.length + ' broken)');
+
+                            if (response.data.complete) {
+                                $('#fix-scan-results').show();
+                                if (brokenFiles.length === 0) {
+                                    $('#scan-results-ok').show();
+                                    $('#scan-results-broken').hide();
+                                } else {
+                                    $('#scan-results-ok').hide();
+                                    $('#scan-results-broken').show();
+                                    $('#broken-count-text').text(brokenFiles.length + ' file(s) have permission issues');
+                                    $('#start-fix').show();
+                                }
+                                $button.prop('disabled', false).text('Scan Files');
+                            } else {
+                                scanBatch();
+                            }
+                        } else {
+                            alert('Error: ' + response.data.message);
+                            $button.prop('disabled', false).text('Scan Files');
+                        }
+                    },
+                    error: function() {
+                        retryCount++;
+                        if (retryCount <= maxRetries) {
+                            $('#scan-progress-text').text('Connection lost. Retrying (' + retryCount + '/' + maxRetries + ')...');
+                            setTimeout(scanBatch, 3000);
+                        } else {
+                            $button.prop('disabled', false).text('Scan Files');
+                        }
+                    }
+                });
+            }
+
+            scanBatch();
+        });
+
+        // Fix broken files
+        $('#start-fix').on('click', function() {
+            var $button = $(this);
+
+            if (brokenFiles.length === 0) {
+                return;
+            }
+
+            if (!confirm('This will fix permissions for ' + brokenFiles.length + ' file(s). Continue?')) {
+                return;
+            }
+
+            $button.prop('disabled', true);
+            $('#fix-progress').show();
+            $('#fix-complete').hide();
+            $('#fix-errors').hide();
+            $('#fix-error-list').empty();
+
+            var totalToFix = brokenFiles.length;
+            var fixedTotal = 0;
+            var fixErrors = [];
+            var batchSize = 5;
+            var batchIndex = 0;
+
+            function fixBatch() {
+                var batch = brokenFiles.slice(batchIndex, batchIndex + batchSize);
+                if (batch.length === 0) {
+                    // Done
+                    $('#fix-complete').show();
+                    $('#fix-complete-text').text('Fixed ' + fixedTotal + ' of ' + totalToFix + ' files.');
+                    if (fixErrors.length > 0) {
+                        $('#fix-errors').show();
+                        fixErrors.forEach(function(err) {
+                            $('#fix-error-list').append('<li>ID ' + err.id + ': ' + err.error + '</li>');
+                        });
+                    }
+                    $button.hide();
+                    return;
+                }
+
+                var ids = batch.map(function(f) { return f.id; });
+
+                $.ajax({
+                    url: omtc_ajax.ajax_url,
+                    type: 'POST',
+                    timeout: 120000,
+                    data: {
+                        action: 'omtc_fix_permissions',
+                        nonce: omtc_ajax.nonce,
+                        ids: ids
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            fixedTotal += response.data.fixed;
+                            if (response.data.errors.length > 0) {
+                                fixErrors = fixErrors.concat(response.data.errors);
+                            }
+
+                            batchIndex += batchSize;
+                            var percentage = Math.min(Math.round((batchIndex / totalToFix) * 100), 100);
+                            $('#fix-progress-bar').css('width', percentage + '%');
+                            $('#fix-progress-text').text('Fixed ' + fixedTotal + ' of ' + totalToFix + ' files...');
+
+                            fixBatch();
+                        } else {
+                            alert('Error: ' + response.data.message);
+                            $button.prop('disabled', false);
+                        }
+                    },
+                    error: function() {
+                        alert('Connection error during fix.');
+                        $button.prop('disabled', false);
+                    }
+                });
+            }
+
+            fixBatch();
+        });
+    }
 });
