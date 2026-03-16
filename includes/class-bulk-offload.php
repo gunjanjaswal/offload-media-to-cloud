@@ -21,7 +21,7 @@ class OMTC_Bulk_Offload {
         check_ajax_referer('omtc_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'Offload-Media-to-Cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
         }
         
         $args = array(
@@ -49,7 +49,7 @@ class OMTC_Bulk_Offload {
         check_ajax_referer('omtc_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'Offload-Media-to-Cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
         }
         
         $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
@@ -77,7 +77,7 @@ class OMTC_Bulk_Offload {
             $provider = $this->get_provider($settings);
             
             if (!$provider) {
-                wp_send_json_error(array('message' => __('Provider not configured', 'Offload-Media-to-Cloud')));
+                wp_send_json_error(array('message' => __('Provider not configured', 'offload-media-to-cloud')));
             }
             
             while ($query->have_posts()) {
@@ -115,7 +115,7 @@ class OMTC_Bulk_Offload {
         $file_path = get_attached_file($attachment_id);
         
         if (!file_exists($file_path)) {
-            return array('success' => false, 'message' => __('File not found', 'Offload-Media-to-Cloud'));
+            return array('success' => false, 'message' => __('File not found', 'offload-media-to-cloud'));
         }
         
         // Upload main file

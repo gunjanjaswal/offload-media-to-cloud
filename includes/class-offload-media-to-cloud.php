@@ -78,37 +78,37 @@ class Offload_Media_To_Cloud {
      */
     public function admin_menu() {
         add_menu_page(
-            __('Offload Media', 'Offload-Media-to-Cloud'),
-            __('Offload Media', 'Offload-Media-to-Cloud'),
+            __('Offload Media', 'offload-media-to-cloud'),
+            __('Offload Media', 'offload-media-to-cloud'),
             'manage_options',
-            'Offload-Media-to-Cloud',
+            'offload-media-to-cloud',
             array($this->settings, 'render_settings_page'),
             'dashicons-cloud-upload',
             80
         );
         
         add_submenu_page(
-            'Offload-Media-to-Cloud',
-            __('Settings', 'Offload-Media-to-Cloud'),
-            __('Settings', 'Offload-Media-to-Cloud'),
+            'offload-media-to-cloud',
+            __('Settings', 'offload-media-to-cloud'),
+            __('Settings', 'offload-media-to-cloud'),
             'manage_options',
-            'Offload-Media-to-Cloud',
+            'offload-media-to-cloud',
             array($this->settings, 'render_settings_page')
         );
         
         add_submenu_page(
-            'Offload-Media-to-Cloud',
-            __('Bulk Offload', 'Offload-Media-to-Cloud'),
-            __('Bulk Offload', 'Offload-Media-to-Cloud'),
+            'offload-media-to-cloud',
+            __('Bulk Offload', 'offload-media-to-cloud'),
+            __('Bulk Offload', 'offload-media-to-cloud'),
             'manage_options',
             'offload-bulk-offload',
             array($this, 'render_bulk_offload_page')
         );
 
         add_submenu_page(
-            'Offload-Media-to-Cloud',
-            __('Restore Local', 'Offload-Media-to-Cloud'),
-            __('Restore Local', 'Offload-Media-to-Cloud'),
+            'offload-media-to-cloud',
+            __('Restore Local', 'offload-media-to-cloud'),
+            __('Restore Local', 'offload-media-to-cloud'),
             'manage_options',
             'offload-bulk-restore',
             array($this, 'render_bulk_restore_page')
@@ -177,7 +177,7 @@ class Offload_Media_To_Cloud {
      * Add action links on Plugins page
      */
     public function plugin_action_links($links) {
-        $settings_link = '<a href="' . admin_url('admin.php?page=offload-media-to-cloud') . '">' . __('Settings', 'Offload-Media-to-Cloud') . '</a>';
+        $settings_link = '<a href="' . admin_url('admin.php?page=offload-media-to-cloud') . '">' . __('Settings', 'offload-media-to-cloud') . '</a>';
         array_unshift($links, $settings_link);
         return $links;
     }
@@ -235,9 +235,9 @@ class Offload_Media_To_Cloud {
 
         $restore_url = admin_url('admin.php?page=offload-bulk-restore');
         echo '<div class="notice notice-warning">';
-        echo '<p><strong>' . esc_html__('Offload Media to Cloud', 'Offload-Media-to-Cloud') . ':</strong> ';
-        echo esc_html__('Some media files exist only in cloud storage. If you deactivate this plugin, those media URLs will break.', 'Offload-Media-to-Cloud') . ' ';
-        echo '<a href="' . esc_url($restore_url) . '"><strong>' . esc_html__('Restore local files first', 'Offload-Media-to-Cloud') . '</strong></a>';
+        echo '<p><strong>' . esc_html__('Offload Media to Cloud', 'offload-media-to-cloud') . ':</strong> ';
+        echo esc_html__('Some media files exist only in cloud storage. If you deactivate this plugin, those media URLs will break.', 'offload-media-to-cloud') . ' ';
+        echo '<a href="' . esc_url($restore_url) . '"><strong>' . esc_html__('Restore local files first', 'offload-media-to-cloud') . '</strong></a>';
         echo '</p></div>';
     }
 

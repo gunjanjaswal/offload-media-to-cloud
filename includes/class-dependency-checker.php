@@ -26,8 +26,8 @@ class OMTC_Dependency_Checker {
         if (!function_exists('hash_hmac')) {
             ?>
             <div class="notice notice-error">
-                <h3><?php esc_html_e('Missing Required PHP Extension', 'Offload-Media-to-Cloud'); ?></h3>
-                <p><?php esc_html_e('The <strong>hash</strong> PHP extension is required for this plugin to work. Please contact your hosting provider to enable it.', 'Offload-Media-to-Cloud'); ?></p>
+                <h3><?php esc_html_e('Missing Required PHP Extension', 'offload-media-to-cloud'); ?></h3>
+                <p><?php esc_html_e('The <strong>hash</strong> PHP extension is required for this plugin to work. Please contact your hosting provider to enable it.', 'offload-media-to-cloud'); ?></p>
             </div>
             <?php
         }

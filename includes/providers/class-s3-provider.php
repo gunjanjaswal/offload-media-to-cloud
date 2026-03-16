@@ -23,7 +23,7 @@ class OMTC_S3_Provider extends OMTC_Provider_Base {
         try {
             $body = file_get_contents($file_path);
             if ($body === false) {
-                return array('success' => false, 'message' => __('Could not read local file', 'Offload-Media-to-Cloud'));
+                return array('success' => false, 'message' => __('Could not read local file', 'offload-media-to-cloud'));
             }
 
             $mime = $this->get_mime_type($file_path);
