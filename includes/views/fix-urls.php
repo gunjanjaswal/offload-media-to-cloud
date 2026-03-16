@@ -43,7 +43,7 @@ $omtc_is_configured = !empty($omtc_settings['provider']) && !empty($omtc_setting
                     <p><?php esc_html_e('All offloaded URLs match current settings. No fixes needed!', 'offload-media-to-cloud'); ?></p>
                 </div>
                 <div id="scan-results-mismatched" style="display:none;">
-                    <div class="notice notice-error">
+                    <div class="notice notice-error" style="display:none;">
                         <p><strong id="mismatched-count-text"></strong></p>
                     </div>
                     <table class="widefat striped" style="margin-top: 10px;">
@@ -155,7 +155,7 @@ $omtc_is_configured = !empty($omtc_settings['provider']) && !empty($omtc_setting
                                     $('#scan-results-mismatched').hide();
                                 } else {
                                     $('#scan-results-ok').hide();
-                                    $('#scan-results-mismatched').show();
+                                    $('#scan-results-mismatched').show().find('.notice').show();
                                     $('#mismatched-count-text').text(
                                         mismatchedItems.length + ' <?php echo esc_js(__('file(s) with mismatched URLs found.', 'offload-media-to-cloud')); ?>'
                                     );

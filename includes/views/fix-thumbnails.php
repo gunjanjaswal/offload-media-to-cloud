@@ -43,7 +43,7 @@ $omtc_is_configured = !empty($omtc_settings['provider']) && !empty($omtc_setting
                     <p><?php esc_html_e('All offloaded media have complete thumbnail URLs. No fixes needed!', 'offload-media-to-cloud'); ?></p>
                 </div>
                 <div id="thumb-scan-results-broken" style="display:none;">
-                    <div class="notice notice-error">
+                    <div class="notice notice-error" style="display:none;">
                         <p><strong id="thumb-broken-count-text"></strong></p>
                     </div>
                     <table class="widefat striped" style="margin-top: 10px;">

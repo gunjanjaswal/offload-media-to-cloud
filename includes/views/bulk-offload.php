@@ -53,7 +53,7 @@ $omtc_is_configured = !empty($omtc_settings['provider']) && !empty($omtc_setting
             </p>
             
             <div id="bulk-offload-complete" style="display:none; margin: 20px 0;">
-                <div class="notice notice-success">
+                <div class="notice notice-success" style="display:none;">
                     <p><?php esc_html_e('Bulk offload completed successfully!', 'offload-media-to-cloud'); ?></p>
                 </div>
             </div>

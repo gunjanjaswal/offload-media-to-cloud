@@ -64,7 +64,7 @@ jQuery(document).ready(function($) {
     if ($('#start-bulk-restore').length) {
 
         // Reset UI state on page load
-        $('#bulk-restore-complete').hide();
+        $('#bulk-restore-complete').hide().find('.notice').hide();
         $('#bulk-restore-progress').hide();
         $('#bulk-restore-errors').hide();
 
@@ -135,7 +135,7 @@ jQuery(document).ready(function($) {
                             $('#restore-progress-text').text('Restored ' + processed + ' of ' + totalCount + ' files');
 
                             if (response.data.complete) {
-                                $('#bulk-restore-complete').show();
+                                $('#bulk-restore-complete').show().find('.notice').show();
                                 $('#restore-progress-text').text('Complete! Restored ' + processed + ' files.');
 
                                 if (errors.length > 0) {
@@ -175,7 +175,7 @@ jQuery(document).ready(function($) {
     if ($('#start-bulk-offload').length) {
 
         // Reset UI state on page load
-        $('#bulk-offload-complete').hide();
+        $('#bulk-offload-complete').hide().find('.notice').hide();
         $('#bulk-offload-progress').hide();
         $('#bulk-offload-errors').hide();
         
@@ -246,7 +246,7 @@ jQuery(document).ready(function($) {
                             $('#progress-text').text('Processed ' + processed + ' of ' + totalCount + ' files');
 
                             if (response.data.complete) {
-                                $('#bulk-offload-complete').show();
+                                $('#bulk-offload-complete').show().find('.notice').show();
                                 $('#progress-text').text('Complete! Processed ' + processed + ' files.');
 
                                 if (errors.length > 0) {
@@ -347,7 +347,7 @@ jQuery(document).ready(function($) {
                                     $('#scan-results-broken').hide();
                                 } else {
                                     $('#scan-results-ok').hide();
-                                    $('#scan-results-broken').show();
+                                    $('#scan-results-broken').show().find('.notice').show();
                                     $('#broken-count-text').text(brokenFiles.length + ' file(s) have permission issues');
                                     $('#start-fix').show();
                                 }
@@ -520,7 +520,7 @@ jQuery(document).ready(function($) {
                                     $('#thumb-scan-results-broken').hide();
                                 } else {
                                     $('#thumb-scan-results-ok').hide();
-                                    $('#thumb-scan-results-broken').show();
+                                    $('#thumb-scan-results-broken').show().find('.notice').show();
                                     $('#thumb-broken-count-text').text(brokenThumbs.length + ' attachment(s) have missing thumbnail URLs');
                                     $('#start-thumb-fix').show();
                                 }
