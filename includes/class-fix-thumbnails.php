@@ -144,6 +144,7 @@ class OMTC_Fix_Thumbnails {
                 }
 
                 if (!file_exists($thumb_path)) {
+                    /* translators: %s: image size name */
                     $errors[] = array('id' => $attachment_id, 'error' => sprintf(__('Local file missing for size: %s', 'offload-media-to-cloud'), $size));
                     continue;
                 }
@@ -158,7 +159,8 @@ class OMTC_Fix_Thumbnails {
                     $thumb_url_result = $result['success'] ? $result['url'] : '';
 
                     if (!$result['success']) {
-                        $errors[] = array('id' => $attachment_id, 'error' => sprintf(__('Upload failed for size %s: %s', 'offload-media-to-cloud'), $size, $result['message']));
+                        /* translators: 1: image size name, 2: error message */
+                        $errors[] = array('id' => $attachment_id, 'error' => sprintf(__('Upload failed for size %1$s: %2$s', 'offload-media-to-cloud'), $size, $result['message']));
                         continue;
                     }
                 }
