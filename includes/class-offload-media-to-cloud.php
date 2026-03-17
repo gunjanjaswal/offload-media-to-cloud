@@ -81,6 +81,12 @@ class Offload_Media_To_Cloud {
         add_filter('plugin_action_links_' . OMTC_PLUGIN_BASENAME, array($this, 'plugin_action_links'));
         add_filter('plugin_row_meta', array($this, 'plugin_row_meta'), 10, 2);
         add_action('admin_notices', array($this, 'deactivation_warning_notice'));
+
+        // Output buffer to catch theme-hardcoded upload URLs (header, footer, etc.)
+        if (!is_admin()) {
+            add_action('template_redirect', array($this, 'start_output_buffer'));
+            add_action('shutdown', array($this, 'end_output_buffer'), 0);
+        }
     }
     
     /**
@@ -261,6 +267,32 @@ class Offload_Media_To_Cloud {
         }
 
         return $content;
+    }
+
+    /**
+     * Start output buffering on frontend to catch all upload URLs
+     */
+    public function start_output_buffer() {
+        ob_start(array($this, 'filter_output_buffer'));
+    }
+
+    /**
+     * End output buffering
+     */
+    public function end_output_buffer() {
+        if (ob_get_level() > 0) {
+            ob_end_flush();
+        }
+    }
+
+    /**
+     * Filter the entire page output to replace upload URLs
+     */
+    public function filter_output_buffer($html) {
+        if (empty($html)) {
+            return $html;
+        }
+        return $this->filter_content_urls($html);
     }
 
     /**
