@@ -73,6 +73,11 @@ class Offload_Media_To_Cloud {
         add_filter('wp_get_attachment_image_src', array($this, 'filter_attachment_image_src'), 10, 4);
         add_filter('wp_calculate_image_srcset', array($this, 'filter_image_srcset'), 10, 5);
         add_filter('the_content', array($this, 'filter_content_urls'), 99);
+        add_filter('post_thumbnail_html', array($this, 'filter_content_urls'), 99);
+        add_filter('widget_text', array($this, 'filter_content_urls'), 99);
+        add_filter('get_custom_logo', array($this, 'filter_content_urls'), 99);
+        add_filter('wp_get_attachment_image', array($this, 'filter_content_urls'), 99);
+        add_filter('get_header_image_tag', array($this, 'filter_content_urls'), 99);
         add_filter('plugin_action_links_' . OMTC_PLUGIN_BASENAME, array($this, 'plugin_action_links'));
         add_filter('plugin_row_meta', array($this, 'plugin_row_meta'), 10, 2);
         add_action('admin_notices', array($this, 'deactivation_warning_notice'));
@@ -237,8 +242,23 @@ class Offload_Media_To_Cloud {
         $base_url = $upload_dir['baseurl'];
         $cloud_base = $this->get_cloud_base_url($settings);
         $prefix = !empty($settings['path_prefix']) ? trailingslashit($settings['path_prefix']) : '';
+        $cloud_url = $cloud_base . $prefix;
 
-        $content = str_replace($base_url . '/', $cloud_base . $prefix, $content);
+        // Replace full URL (https)
+        $content = str_replace($base_url . '/', $cloud_url, $content);
+
+        // Replace http version if site uses https
+        if (strpos($base_url, 'https://') === 0) {
+            $http_base = str_replace('https://', 'http://', $base_url);
+            $content = str_replace($http_base . '/', $cloud_url, $content);
+        }
+
+        // Replace relative /wp-content/uploads/ paths in src attributes
+        $relative_path = wp_parse_url($base_url, PHP_URL_PATH);
+        if ($relative_path) {
+            $content = str_replace('"' . $relative_path . '/', '"' . $cloud_url, $content);
+            $content = str_replace("'" . $relative_path . "/", "'" . $cloud_url, $content);
+        }
 
         return $content;
     }
