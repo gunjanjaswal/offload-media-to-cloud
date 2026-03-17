@@ -4,7 +4,7 @@ Donate link: https://buymeacoffee.com/gunjanjaswal
 Tags: s3, cloud storage, media offload, cdn, performance
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -41,7 +41,8 @@ Offload WordPress media to Amazon S3, DigitalOcean Spaces, or Google Cloud Stora
 **CDN & Performance Optimization**
 
 * Seamless CloudFront and custom CDN integration
-* Full URL rewriting — post content, srcset, and all image sizes
+* Full URL rewriting — post content, srcset, thumbnails, theme templates, headers, footers
+* Output buffer rewrites all frontend HTML — catches even hardcoded theme URLs
 * Smart re-link — detects files already in cloud, skips re-upload
 * Global content delivery for faster load times
 * Reduced server bandwidth and hosting costs
@@ -248,6 +249,12 @@ Yes! All credentials are stored securely in your WordPress database. Data is tra
 8. Plugin action links — quick access to settings and support
 
 == Changelog ==
+
+= 1.2.0 =
+* New: Full-page output buffer URL rewriting — catches theme-hardcoded image URLs in headers, footers, and templates
+* New: Handles http/https URL variations and relative /wp-content/uploads/ paths
+* New: Filters for post_thumbnail_html, widget_text, custom_logo, wp_get_attachment_image, header_image_tag
+* Fix: Images in theme templates not rewriting for non-logged-in users
 
 = 1.1.0 =
 * New: Fix Permissions tool — scan and repair 403 AccessDenied cloud files

@@ -7,7 +7,7 @@
 [![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-21759B?style=for-the-badge&logo=wordpress&logoColor=white)](https://wordpress.org)
 [![PHP](https://img.shields.io/badge/PHP-7.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
 [![License](https://img.shields.io/badge/License-GPLv2-E74C3C?style=for-the-badge)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-1.1.0-2ECC71?style=for-the-badge)](https://github.com/gunjanjaswal/offload-media-to-cloud/releases)
+[![Version](https://img.shields.io/badge/Version-1.2.0-2ECC71?style=for-the-badge)](https://github.com/gunjanjaswal/offload-media-to-cloud/releases)
 
 <br>
 
@@ -33,7 +33,7 @@
 - **Auto Sync** — New uploads instantly copied to cloud
 - **Bulk Migration** — One-click offload with progress tracking
 - **Smart Re-link** — Detects existing cloud files, skips re-upload
-- **Full URL Rewriting** — Post content, srcset, thumbnails — all covered
+- **Full URL Rewriting** — Post content, srcset, thumbnails, theme templates — all covered
 - **Auto-Retry** — Resumes on connection drops (up to 5 retries)
 
 </td>
@@ -193,6 +193,7 @@ cp -r offload-media-to-cloud /path/to/wp-content/plugins/
                      │  Post Content │
                      │  Srcset URLs  │
                      │  Thumbnails   │
+                     │  Theme/Header │
                      │  CDN Delivery │
                      └──────────────┘
 ```
