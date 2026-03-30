@@ -4,7 +4,7 @@ Donate link: https://buymeacoffee.com/gunjanjaswal
 Tags: s3, cloud storage, media offload, cdn, performance
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -113,6 +113,28 @@ Powerful storage infrastructure from Google with multi-regional redundancy and e
 * **Mobile Optimization** — Faster image delivery for mobile users
 * **Better Search Rankings** — Google rewards faster websites
 * **Reduced Bounce Rate** — Keep visitors engaged with quick-loading pages
+
+== External services ==
+
+This plugin connects to external cloud storage providers to automatically offload and serve your media files. Depending on your configuration, it relies on one of the following third-party services:
+
+**Amazon S3**
+Used to store and serve your media files globally.
+- **Data sent:** Your media files (images, videos, documents), filenames, and MIME types are sent securely to Amazon S3 whenever you upload a new file or use the bulk offload tool.
+- **Terms of Use:** [AWS Service Terms](https://aws.amazon.com/service-terms/)
+- **Privacy Policy:** [AWS Privacy Notice](https://aws.amazon.com/privacy/)
+
+**DigitalOcean Spaces**
+Used to store and serve your media files globally.
+- **Data sent:** Your media files (images, videos, documents), filenames, and MIME types are sent securely to DigitalOcean whenever you upload a new file or use the bulk offload tool.
+- **Terms of Use:** [DigitalOcean Terms of Service](https://www.digitalocean.com/legal/terms-of-service-agreement)
+- **Privacy Policy:** [DigitalOcean Privacy Policy](https://www.digitalocean.com/legal/privacy-policy)
+
+**Google Cloud Storage**
+Used to store and serve your media files globally.
+- **Data sent:** Your media files (images, videos, documents), filenames, and MIME types are sent securely to Google Cloud Storage whenever you upload a new file or use the bulk offload tool.
+- **Terms of Use:** [Google Cloud Terms](https://cloud.google.com/terms)
+- **Privacy Policy:** [Google Cloud Privacy Notice](https://cloud.google.com/terms/cloud-privacy-notice)
 
 == Installation ==
 
@@ -249,6 +271,11 @@ Yes! All credentials are stored securely in your WordPress database. Data is tra
 8. Plugin action links — quick access to settings and support
 
 == Changelog ==
+
+= 1.2.1 =
+* Fix: Removed inline script tag from fix-urls.php template to adhere to WP enqueuing guidelines
+* Fix: Replaced ob_start() full-page buffering with wp_template_enhancement_output_buffer
+* Docs: Added External Services declaration block to document S3/DO/GCS usage
 
 = 1.2.0 =
 * New: Full-page output buffer URL rewriting — catches theme-hardcoded image URLs in headers, footers, and templates

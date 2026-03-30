@@ -7,7 +7,7 @@
 [![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-21759B?style=for-the-badge&logo=wordpress&logoColor=white)](https://wordpress.org)
 [![PHP](https://img.shields.io/badge/PHP-7.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
 [![License](https://img.shields.io/badge/License-GPLv2-E74C3C?style=for-the-badge)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-1.2.0-2ECC71?style=for-the-badge)](https://github.com/gunjanjaswal/offload-media-to-cloud/releases)
+[![Version](https://img.shields.io/badge/Version-1.2.1-2ECC71?style=for-the-badge)](https://github.com/gunjanjaswal/offload-media-to-cloud/releases)
 
 <br>
 
@@ -104,6 +104,30 @@ Detects when your **CDN URL, bucket, or region** settings changed but stored med
 </table>
 
 Each tool follows a **Scan → Review → Fix** workflow with real-time progress tracking, batch processing, and detailed error reporting.
+
+---
+
+## 🌐 External Services
+
+This plugin connects to external cloud storage providers to automatically offload and serve your media files. Depending on your configuration, it relies on one of the following third-party services:
+
+### <img src="https://img.shields.io/badge/-Amazon%20S3-FF9900?style=flat-square&logo=amazons3&logoColor=white" alt="S3">
+Used to store and serve your media files globally.
+- **Data sent:** Your media files (images, videos, documents), filenames, and MIME types are sent securely to Amazon S3 whenever you upload a new file or use the bulk offload tool.
+- **Terms of Use:** [AWS Service Terms](https://aws.amazon.com/service-terms/)
+- **Privacy Policy:** [AWS Privacy Notice](https://aws.amazon.com/privacy/)
+
+### <img src="https://img.shields.io/badge/-DigitalOcean%20Spaces-0080FF?style=flat-square&logo=digitalocean&logoColor=white" alt="DO">
+Used to store and serve your media files globally.
+- **Data sent:** Your media files (images, videos, documents), filenames, and MIME types are sent securely to DigitalOcean whenever you upload a new file or use the bulk offload tool.
+- **Terms of Use:** [DigitalOcean Terms of Service](https://www.digitalocean.com/legal/terms-of-service-agreement)
+- **Privacy Policy:** [DigitalOcean Privacy Policy](https://www.digitalocean.com/legal/privacy-policy)
+
+### <img src="https://img.shields.io/badge/-Google%20Cloud%20Storage-4285F4?style=flat-square&logo=googlecloud&logoColor=white" alt="GCS">
+Used to store and serve your media files globally.
+- **Data sent:** Your media files (images, videos, documents), filenames, and MIME types are sent securely to Google Cloud Storage whenever you upload a new file or use the bulk offload tool.
+- **Terms of Use:** [Google Cloud Terms](https://cloud.google.com/terms)
+- **Privacy Policy:** [Google Cloud Privacy Notice](https://cloud.google.com/terms/cloud-privacy-notice)
 
 ---
 

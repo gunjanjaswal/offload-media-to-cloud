@@ -84,8 +84,7 @@ class Offload_Media_To_Cloud {
 
         // Output buffer to catch theme-hardcoded upload URLs (header, footer, etc.)
         if (!is_admin()) {
-            add_action('template_redirect', array($this, 'start_output_buffer'));
-            add_action('shutdown', array($this, 'end_output_buffer'), 0);
+            add_filter('wp_template_enhancement_output_buffer', array($this, 'filter_output_buffer'));
         }
     }
     
@@ -171,7 +170,15 @@ class Offload_Media_To_Cloud {
         
         wp_localize_script('omtc-admin', 'omtc_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('omtc_ajax_nonce')
+            'nonce' => wp_create_nonce('omtc_ajax_nonce'),
+            'i18n' => array(
+                'scanned' => __('Scanned', 'offload-media-to-cloud'),
+                'file_mismatched_found' => __('file(s) with mismatched URLs found.', 'offload-media-to-cloud'),
+                'ajax_failed' => __('AJAX request failed', 'offload-media-to-cloud'),
+                'fixed' => __('Fixed', 'offload-media-to-cloud'),
+                'file_updated' => __('file(s) updated successfully.', 'offload-media-to-cloud'),
+                'attachment' => __('Attachment', 'offload-media-to-cloud'),
+            )
         ));
     }
     
@@ -267,22 +274,6 @@ class Offload_Media_To_Cloud {
         }
 
         return $content;
-    }
-
-    /**
-     * Start output buffering on frontend to catch all upload URLs
-     */
-    public function start_output_buffer() {
-        ob_start(array($this, 'filter_output_buffer'));
-    }
-
-    /**
-     * End output buffering
-     */
-    public function end_output_buffer() {
-        if (ob_get_level() > 0) {
-            ob_end_flush();
-        }
     }
 
     /**
