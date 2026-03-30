@@ -33,6 +33,7 @@ class OMTC_Fix_Urls {
             'posts_per_page' => $batch_size,
             'offset'         => $offset,
             'fields'         => 'ids',
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Needed to track offload state via meta
             'meta_query'     => array(
                 array(
                     'key'     => 'omtc_remote_url',

@@ -384,6 +384,7 @@ class Offload_Media_To_Cloud {
             'post_status'    => 'inherit',
             'posts_per_page' => 5,
             'fields'         => 'ids',
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Needed to track offload state via meta
             'meta_query'     => array(
                 array(
                     'key'     => 'omtc_remote_url',
