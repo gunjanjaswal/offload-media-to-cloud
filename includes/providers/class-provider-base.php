@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-abstract class OMTC_Provider_Base {
+abstract class G33KI_Provider_Base {
     
     protected $settings;
     
@@ -83,3 +83,5 @@ abstract class OMTC_Provider_Base {
         return $mime_type;
     }
 }
+
+

@@ -7,21 +7,21 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class OMTC_Bulk_Restore {
+class G33KI_Bulk_Restore {
 
     public function __construct() {
-        add_action('wp_ajax_omtc_get_restore_count', array($this, 'get_restore_count_ajax'));
-        add_action('wp_ajax_omtc_bulk_restore', array($this, 'bulk_restore_ajax'));
+        add_action('wp_ajax_g33ki_get_restore_count', array($this, 'get_restore_count_ajax'));
+        add_action('wp_ajax_g33ki_bulk_restore', array($this, 'bulk_restore_ajax'));
     }
 
     /**
      * Get count of media files that are offloaded but missing locally
      */
     public function get_restore_count_ajax() {
-        check_ajax_referer('omtc_ajax_nonce', 'nonce');
+        check_ajax_referer('g33ki_ajax_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'g33ki-cloud-storage-for-media-library')));
         }
 
         $count = $this->get_restore_count();
@@ -40,7 +40,7 @@ class OMTC_Bulk_Restore {
             // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Needed to track offload state via meta
             'meta_query'     => array(
                 array(
-                    'key'     => 'omtc_remote_url',
+                    'key'     => 'g33ki_remote_url',
                     'compare' => 'EXISTS',
                 ),
             ),
@@ -63,10 +63,10 @@ class OMTC_Bulk_Restore {
      * Bulk restore media files from cloud
      */
     public function bulk_restore_ajax() {
-        check_ajax_referer('omtc_ajax_nonce', 'nonce');
+        check_ajax_referer('g33ki_ajax_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'g33ki-cloud-storage-for-media-library')));
         }
 
         $batch_size = 3; // Small batches to avoid Cloudflare/server timeouts
@@ -79,7 +79,7 @@ class OMTC_Bulk_Restore {
             // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Needed to track offload state via meta
             'meta_query'     => array(
                 array(
-                    'key'     => 'omtc_remote_url',
+                    'key'     => 'g33ki_remote_url',
                     'compare' => 'EXISTS',
                 ),
             ),
@@ -91,11 +91,11 @@ class OMTC_Bulk_Restore {
         $errors = array();
 
         if ($query->have_posts()) {
-            $settings = get_option('omtc_settings', array());
+            $settings = get_option('g33ki_settings', array());
             $provider = $this->get_provider($settings);
 
             if (!$provider) {
-                wp_send_json_error(array('message' => __('Provider not configured', 'offload-media-to-cloud')));
+                wp_send_json_error(array('message' => __('Provider not configured', 'g33ki-cloud-storage-for-media-library')));
             }
 
             while ($query->have_posts()) {
@@ -140,10 +140,13 @@ class OMTC_Bulk_Restore {
      */
     private function restore_single_attachment($attachment_id, $provider, $settings) {
         $file_path = get_attached_file($attachment_id);
-        $remote_path = get_post_meta($attachment_id, 'omtc_remote_path', true);
+        $remote_path = get_post_meta($attachment_id, 'g33ki_remote_path', true);
+        if (empty($remote_path)) {
+            $remote_path = get_post_meta($attachment_id, 'omtc_remote_path', true);
+        }
 
         if (empty($remote_path)) {
-            return array('success' => false, 'message' => __('No remote path stored', 'offload-media-to-cloud'));
+            return array('success' => false, 'message' => __('No remote path stored', 'g33ki-cloud-storage-for-media-library'));
         }
 
         // Ensure local directory exists
@@ -159,7 +162,7 @@ class OMTC_Bulk_Restore {
         }
 
         if (file_put_contents($file_path, $result['body']) === false) {
-            return array('success' => false, 'message' => __('Failed to write local file', 'offload-media-to-cloud'));
+            return array('success' => false, 'message' => __('Failed to write local file', 'g33ki-cloud-storage-for-media-library'));
         }
 
         // Download thumbnails
@@ -174,7 +177,10 @@ class OMTC_Bulk_Restore {
                     continue;
                 }
 
-                $thumb_remote_url = get_post_meta($attachment_id, 'omtc_remote_url_' . $size, true);
+                $thumb_remote_url = get_post_meta($attachment_id, 'g33ki_remote_url_' . $size, true);
+                if (empty($thumb_remote_url)) {
+                    $thumb_remote_url = get_post_meta($attachment_id, 'omtc_remote_url_' . $size, true);
+                }
                 if (empty($thumb_remote_url)) {
                     continue;
                 }
@@ -199,7 +205,7 @@ class OMTC_Bulk_Restore {
             return null;
         }
 
-        $provider_class = 'OMTC_' . ucfirst($settings['provider']) . '_Provider';
+        $provider_class = 'G33KI_' . ucfirst($settings['provider']) . '_Provider';
         if (!class_exists($provider_class)) {
             return null;
         }
@@ -219,4 +225,6 @@ class OMTC_Bulk_Restore {
     }
 }
 
-new OMTC_Bulk_Restore();
+new G33KI_Bulk_Restore();
+
+

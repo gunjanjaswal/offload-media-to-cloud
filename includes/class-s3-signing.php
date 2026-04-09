@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class OMTC_S3_Signing {
+class G33KI_S3_Signing {
 
     /**
      * Make a signed S3-compatible API request
@@ -143,3 +143,5 @@ class OMTC_S3_Signing {
         return implode('/', $encoded);
     }
 }
+
+

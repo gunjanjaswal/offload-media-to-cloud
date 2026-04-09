@@ -7,12 +7,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class OMTC_Uploader {
+class G33KI_Uploader {
     
     private $settings;
     
     public function __construct() {
-        $this->settings = get_option('omtc_settings', array());
+        $this->settings = get_option('g33ki_settings', array());
         
         // Hook into WordPress upload process
         add_filter('wp_generate_attachment_metadata', array($this, 'upload_attachment'), 10, 2);
@@ -42,8 +42,8 @@ class OMTC_Uploader {
         $result = $provider->upload_file($file_path, $remote_path);
         
         if ($result['success']) {
-            update_post_meta($attachment_id, 'omtc_remote_url', $result['url']);
-            update_post_meta($attachment_id, 'omtc_remote_path', $remote_path);
+            update_post_meta($attachment_id, 'g33ki_remote_url', $result['url']);
+            update_post_meta($attachment_id, 'g33ki_remote_path', $remote_path);
             
             // Upload thumbnails
             if (isset($metadata['sizes']) && is_array($metadata['sizes'])) {
@@ -57,7 +57,7 @@ class OMTC_Uploader {
                         $thumb_result = $provider->upload_file($thumb_path, $thumb_remote_path);
                         
                         if ($thumb_result['success']) {
-                            update_post_meta($attachment_id, 'omtc_remote_url_' . $size, $thumb_result['url']);
+                            update_post_meta($attachment_id, 'g33ki_remote_url_' . $size, $thumb_result['url']);
                         }
                     }
                 }
@@ -76,7 +76,10 @@ class OMTC_Uploader {
      * Delete attachment from cloud storage
      */
     public function delete_attachment($attachment_id) {
-        $remote_path = get_post_meta($attachment_id, 'omtc_remote_path', true);
+        $remote_path = get_post_meta($attachment_id, 'g33ki_remote_path', true);
+        if (!$remote_path) {
+            $remote_path = get_post_meta($attachment_id, 'omtc_remote_path', true);
+        }
         if (!$remote_path) {
             return;
         }
@@ -92,7 +95,10 @@ class OMTC_Uploader {
         $metadata = wp_get_attachment_metadata($attachment_id);
         if (isset($metadata['sizes']) && is_array($metadata['sizes'])) {
             foreach ($metadata['sizes'] as $size => $size_data) {
-                $thumb_remote_url = get_post_meta($attachment_id, 'omtc_remote_url_' . $size, true);
+                $thumb_remote_url = get_post_meta($attachment_id, 'g33ki_remote_url_' . $size, true);
+                if (!$thumb_remote_url) {
+                    $thumb_remote_url = get_post_meta($attachment_id, 'omtc_remote_url_' . $size, true);
+                }
                 if ($thumb_remote_url) {
                     $thumb_remote_path = $this->get_remote_path_from_url($thumb_remote_url);
                     $provider->delete_file($thumb_remote_path);
@@ -109,7 +115,7 @@ class OMTC_Uploader {
             return null;
         }
         
-        $provider_class = 'OMTC_' . ucfirst($this->settings['provider']) . '_Provider';
+        $provider_class = 'G33KI_' . ucfirst($this->settings['provider']) . '_Provider';
         if (!class_exists($provider_class)) {
             return null;
         }
@@ -164,3 +170,5 @@ class OMTC_Uploader {
         }
     }
 }
+
+

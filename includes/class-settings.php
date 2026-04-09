@@ -7,14 +7,14 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class OMTC_Settings {
+class g33ki_settings {
     
     private $options;
     
     public function __construct() {
-        $this->options = get_option('omtc_settings', array());
-        add_action('wp_ajax_omtc_save_settings', array($this, 'save_settings_ajax'));
-        add_action('wp_ajax_omtc_test_connection', array($this, 'test_connection_ajax'));
+        $this->options = get_option('g33ki_settings', array());
+        add_action('wp_ajax_g33ki_save_settings', array($this, 'save_settings_ajax'));
+        add_action('wp_ajax_g33ki_test_connection', array($this, 'test_connection_ajax'));
     }
     
     /**
@@ -69,52 +69,54 @@ class OMTC_Settings {
      * Render settings page
      */
     public function render_settings_page() {
-        require_once OMTC_PLUGIN_DIR . 'includes/views/settings.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/views/settings.php';
     }
     
     /**
      * Save settings via AJAX
      */
     public function save_settings_ajax() {
-        check_ajax_referer('omtc_ajax_nonce', 'nonce');
+        check_ajax_referer('g33ki_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'g33ki-cloud-storage-for-media-library')));
         }
         
         $settings = isset($_POST['settings']) ? array_map('sanitize_text_field', wp_unslash($_POST['settings'])) : array();
         $sanitized = $this->sanitize_settings($settings);
-        update_option('omtc_settings', $sanitized);
+        update_option('g33ki_settings', $sanitized);
         
-        wp_send_json_success(array('message' => __('Settings saved successfully', 'offload-media-to-cloud')));
+        wp_send_json_success(array('message' => __('Settings saved successfully', 'g33ki-cloud-storage-for-media-library')));
     }
     
     /**
      * Test connection via AJAX
      */
     public function test_connection_ajax() {
-        check_ajax_referer('omtc_ajax_nonce', 'nonce');
+        check_ajax_referer('g33ki_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'g33ki-cloud-storage-for-media-library')));
         }
         
         $provider = isset($_POST['provider']) ? sanitize_text_field(wp_unslash($_POST['provider'])) : '';
         $credentials = isset($_POST['credentials']) ? array_map('sanitize_text_field', wp_unslash($_POST['credentials'])) : array();
         
         // Get provider instance
-        $provider_class = 'OMTC_' . ucfirst($provider) . '_Provider';
+        $provider_class = 'G33KI_' . ucfirst($provider) . '_Provider';
         if (!class_exists($provider_class)) {
-            wp_send_json_error(array('message' => __('Invalid provider', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Invalid provider', 'g33ki-cloud-storage-for-media-library')));
         }
         
         $provider_instance = new $provider_class($credentials);
         $result = $provider_instance->test_connection();
         
         if ($result['success']) {
-            wp_send_json_success(array('message' => __('Connection successful!', 'offload-media-to-cloud')));
+            wp_send_json_success(array('message' => __('Connection successful!', 'g33ki-cloud-storage-for-media-library')));
         } else {
             wp_send_json_error(array('message' => $result['message']));
         }
     }
 }
+
+

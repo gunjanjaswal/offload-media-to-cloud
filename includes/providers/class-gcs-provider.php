@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class OMTC_GCS_Provider extends OMTC_Provider_Base {
+class G33KI_GCS_Provider extends G33KI_Provider_Base {
 
     private function get_endpoint($path = '') {
         $bucket = $this->settings['bucket'];
@@ -21,14 +21,14 @@ class OMTC_GCS_Provider extends OMTC_Provider_Base {
         try {
             $body = file_get_contents($file_path);
             if ($body === false) {
-                return array('success' => false, 'message' => __('Could not read local file', 'offload-media-to-cloud'));
+                return array('success' => false, 'message' => __('Could not read local file', 'g33ki-cloud-storage-for-media-library'));
             }
 
             $mime = $this->get_mime_type($file_path);
             $url = $this->get_endpoint($remote_path);
 
             // GCS HMAC uses region 'auto' and service 's3'
-            $response = OMTC_S3_Signing::request(
+            $response = G33KI_S3_Signing::request(
                 'PUT',
                 $url,
                 array(
@@ -62,7 +62,7 @@ class OMTC_GCS_Provider extends OMTC_Provider_Base {
         try {
             $url = $this->get_endpoint($remote_path);
 
-            $response = OMTC_S3_Signing::request(
+            $response = G33KI_S3_Signing::request(
                 'GET',
                 $url,
                 array(),
@@ -92,7 +92,7 @@ class OMTC_GCS_Provider extends OMTC_Provider_Base {
         try {
             $url = $this->get_endpoint($remote_path);
 
-            $response = OMTC_S3_Signing::request(
+            $response = G33KI_S3_Signing::request(
                 'DELETE',
                 $url,
                 array(),
@@ -117,7 +117,7 @@ class OMTC_GCS_Provider extends OMTC_Provider_Base {
         try {
             $url = $this->get_endpoint();
 
-            $response = OMTC_S3_Signing::request(
+            $response = G33KI_S3_Signing::request(
                 'HEAD',
                 $url,
                 array(),
@@ -147,7 +147,7 @@ class OMTC_GCS_Provider extends OMTC_Provider_Base {
         try {
             $url = $this->get_endpoint($remote_path);
 
-            $response = OMTC_S3_Signing::request(
+            $response = G33KI_S3_Signing::request(
                 'HEAD',
                 $url,
                 array(),
@@ -178,3 +178,5 @@ class OMTC_GCS_Provider extends OMTC_Provider_Base {
         return "https://storage.googleapis.com/{$bucket}/{$remote_path}";
     }
 }
+
+

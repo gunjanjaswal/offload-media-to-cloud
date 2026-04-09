@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Offload_Media_To_Cloud {
+class G33ki_Cloud_Storage_For_Media_Library {
     
     /**
      * Single instance of the class
@@ -46,21 +46,21 @@ class Offload_Media_To_Cloud {
      * Include required files
      */
     private function includes() {
-        require_once OMTC_PLUGIN_DIR . 'includes/class-dependency-checker.php';
-        require_once OMTC_PLUGIN_DIR . 'includes/class-settings.php';
-        require_once OMTC_PLUGIN_DIR . 'includes/class-uploader.php';
-        require_once OMTC_PLUGIN_DIR . 'includes/class-bulk-offload.php';
-        require_once OMTC_PLUGIN_DIR . 'includes/class-bulk-restore.php';
-        require_once OMTC_PLUGIN_DIR . 'includes/class-fix-permissions.php';
-        require_once OMTC_PLUGIN_DIR . 'includes/class-fix-thumbnails.php';
-        require_once OMTC_PLUGIN_DIR . 'includes/class-fix-urls.php';
-        require_once OMTC_PLUGIN_DIR . 'includes/providers/class-provider-base.php';
-        require_once OMTC_PLUGIN_DIR . 'includes/providers/class-s3-provider.php';
-        require_once OMTC_PLUGIN_DIR . 'includes/providers/class-spaces-provider.php';
-        require_once OMTC_PLUGIN_DIR . 'includes/providers/class-gcs-provider.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/class-dependency-checker.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/class-settings.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/class-uploader.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/class-bulk-offload.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/class-bulk-restore.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/class-fix-permissions.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/class-fix-thumbnails.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/class-fix-urls.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/providers/class-provider-base.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/providers/class-s3-provider.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/providers/class-spaces-provider.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/providers/class-gcs-provider.php';
         
-        $this->settings = new OMTC_Settings();
-        $this->uploader = new OMTC_Uploader();
+        $this->settings = new g33ki_settings();
+        $this->uploader = new G33KI_Uploader();
     }
     
     /**
@@ -78,7 +78,7 @@ class Offload_Media_To_Cloud {
         add_filter('get_custom_logo', array($this, 'filter_content_urls'), 99);
         add_filter('wp_get_attachment_image', array($this, 'filter_content_urls'), 99);
         add_filter('get_header_image_tag', array($this, 'filter_content_urls'), 99);
-        add_filter('plugin_action_links_' . OMTC_PLUGIN_BASENAME, array($this, 'plugin_action_links'));
+        add_filter('plugin_action_links_' . G33KI_PLUGIN_BASENAME, array($this, 'plugin_action_links'));
         add_filter('plugin_row_meta', array($this, 'plugin_row_meta'), 10, 2);
         add_action('admin_notices', array($this, 'deactivation_warning_notice'));
 
@@ -93,66 +93,66 @@ class Offload_Media_To_Cloud {
      */
     public function admin_menu() {
         add_menu_page(
-            __('Offload Media', 'offload-media-to-cloud'),
-            __('Offload Media', 'offload-media-to-cloud'),
+            __('G33ki Cloud', 'g33ki-cloud-storage-for-media-library'),
+            __('G33ki Cloud', 'g33ki-cloud-storage-for-media-library'),
             'manage_options',
-            'offload-media-to-cloud',
+            'g33ki-cloud-storage-for-media-library',
             array($this->settings, 'render_settings_page'),
             'dashicons-cloud-upload',
             80
         );
         
         add_submenu_page(
-            'offload-media-to-cloud',
-            __('Settings', 'offload-media-to-cloud'),
-            __('Settings', 'offload-media-to-cloud'),
+            'g33ki-cloud-storage-for-media-library',
+            __('Settings', 'g33ki-cloud-storage-for-media-library'),
+            __('Settings', 'g33ki-cloud-storage-for-media-library'),
             'manage_options',
-            'offload-media-to-cloud',
+            'g33ki-cloud-storage-for-media-library',
             array($this->settings, 'render_settings_page')
         );
         
         add_submenu_page(
-            'offload-media-to-cloud',
-            __('Bulk Offload', 'offload-media-to-cloud'),
-            __('Bulk Offload', 'offload-media-to-cloud'),
+            'g33ki-cloud-storage-for-media-library',
+            __('Bulk Offload', 'g33ki-cloud-storage-for-media-library'),
+            __('Bulk Offload', 'g33ki-cloud-storage-for-media-library'),
             'manage_options',
-            'offload-bulk-offload',
+            'g33ki-bulk-offload',
             array($this, 'render_bulk_offload_page')
         );
 
         add_submenu_page(
-            'offload-media-to-cloud',
-            __('Restore Local', 'offload-media-to-cloud'),
-            __('Restore Local', 'offload-media-to-cloud'),
+            'g33ki-cloud-storage-for-media-library',
+            __('Restore Local', 'g33ki-cloud-storage-for-media-library'),
+            __('Restore Local', 'g33ki-cloud-storage-for-media-library'),
             'manage_options',
-            'offload-bulk-restore',
+            'g33ki-bulk-restore',
             array($this, 'render_bulk_restore_page')
         );
 
         add_submenu_page(
-            'offload-media-to-cloud',
-            __('Fix Permissions', 'offload-media-to-cloud'),
-            __('Fix Permissions', 'offload-media-to-cloud'),
+            'g33ki-cloud-storage-for-media-library',
+            __('Fix Permissions', 'g33ki-cloud-storage-for-media-library'),
+            __('Fix Permissions', 'g33ki-cloud-storage-for-media-library'),
             'manage_options',
-            'offload-fix-permissions',
+            'g33ki-fix-permissions',
             array($this, 'render_fix_permissions_page')
         );
 
         add_submenu_page(
-            'offload-media-to-cloud',
-            __('Fix Thumbnails', 'offload-media-to-cloud'),
-            __('Fix Thumbnails', 'offload-media-to-cloud'),
+            'g33ki-cloud-storage-for-media-library',
+            __('Fix Thumbnails', 'g33ki-cloud-storage-for-media-library'),
+            __('Fix Thumbnails', 'g33ki-cloud-storage-for-media-library'),
             'manage_options',
-            'offload-fix-thumbnails',
+            'g33ki-fix-thumbnails',
             array($this, 'render_fix_thumbnails_page')
         );
 
         add_submenu_page(
-            'offload-media-to-cloud',
-            __('Fix URLs', 'offload-media-to-cloud'),
-            __('Fix URLs', 'offload-media-to-cloud'),
+            'g33ki-cloud-storage-for-media-library',
+            __('Fix URLs', 'g33ki-cloud-storage-for-media-library'),
+            __('Fix URLs', 'g33ki-cloud-storage-for-media-library'),
             'manage_options',
-            'offload-fix-urls',
+            'g33ki-fix-urls',
             array($this, 'render_fix_urls_page')
         );
     }
@@ -161,23 +161,23 @@ class Offload_Media_To_Cloud {
      * Enqueue admin scripts
      */
     public function admin_scripts($hook) {
-        if (strpos($hook, 'offload') === false) {
+        if (strpos($hook, 'g33ki') === false) {
             return;
         }
         
-        wp_enqueue_style('omtc-admin', OMTC_PLUGIN_URL . 'assets/css/admin.css', array(), OMTC_VERSION . '.2');
-        wp_enqueue_script('omtc-admin', OMTC_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), OMTC_VERSION . '.2', true);
+        wp_enqueue_style('g33ki-admin', G33KI_PLUGIN_URL . 'assets/css/admin.css', array(), G33KI_VERSION . '.2');
+        wp_enqueue_script('g33ki-admin', G33KI_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), G33KI_VERSION . '.2', true);
         
-        wp_localize_script('omtc-admin', 'omtc_ajax', array(
+        wp_localize_script('g33ki-admin', 'g33ki_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('omtc_ajax_nonce'),
+            'nonce' => wp_create_nonce('g33ki_ajax_nonce'),
             'i18n' => array(
-                'scanned' => __('Scanned', 'offload-media-to-cloud'),
-                'file_mismatched_found' => __('file(s) with mismatched URLs found.', 'offload-media-to-cloud'),
-                'ajax_failed' => __('AJAX request failed', 'offload-media-to-cloud'),
-                'fixed' => __('Fixed', 'offload-media-to-cloud'),
-                'file_updated' => __('file(s) updated successfully.', 'offload-media-to-cloud'),
-                'attachment' => __('Attachment', 'offload-media-to-cloud'),
+                'scanned' => __('Scanned', 'g33ki-cloud-storage-for-media-library'),
+                'file_mismatched_found' => __('file(s) with mismatched URLs found.', 'g33ki-cloud-storage-for-media-library'),
+                'ajax_failed' => __('AJAX request failed', 'g33ki-cloud-storage-for-media-library'),
+                'fixed' => __('Fixed', 'g33ki-cloud-storage-for-media-library'),
+                'file_updated' => __('file(s) updated successfully.', 'g33ki-cloud-storage-for-media-library'),
+                'attachment' => __('Attachment', 'g33ki-cloud-storage-for-media-library'),
             )
         ));
     }
@@ -186,7 +186,10 @@ class Offload_Media_To_Cloud {
      * Filter attachment URL
      */
     public function filter_attachment_url($url, $post_id) {
-        $remote_url = get_post_meta($post_id, 'omtc_remote_url', true);
+        $remote_url = get_post_meta($post_id, 'g33ki_remote_url', true);
+        if (!$remote_url) {
+            $remote_url = get_post_meta($post_id, 'omtc_remote_url', true);
+        }
         if ($remote_url) {
             return $remote_url;
         }
@@ -198,7 +201,13 @@ class Offload_Media_To_Cloud {
      */
     public function filter_attachment_image_src($image, $attachment_id, $size, $icon) {
         if ($image && isset($image[0])) {
-            $remote_url = get_post_meta($attachment_id, 'omtc_remote_url_' . $size, true);
+            $remote_url = get_post_meta($attachment_id, 'g33ki_remote_url_' . $size, true);
+            if (!$remote_url) {
+                $remote_url = get_post_meta($attachment_id, 'omtc_remote_url_' . $size, true);
+            }
+            if (!$remote_url) {
+                $remote_url = get_post_meta($attachment_id, 'g33ki_remote_url', true);
+            }
             if (!$remote_url) {
                 $remote_url = get_post_meta($attachment_id, 'omtc_remote_url', true);
             }
@@ -217,14 +226,18 @@ class Offload_Media_To_Cloud {
             return $sources;
         }
 
-        $remote_url = get_post_meta($attachment_id, 'omtc_remote_url', true);
+        $remote_url = get_post_meta($attachment_id, 'g33ki_remote_url', true);
+        if (!$remote_url) {
+            $remote_url = get_post_meta($attachment_id, 'omtc_remote_url', true);
+        }
+        
         if (!$remote_url) {
             return $sources;
         }
 
         $upload_dir = wp_upload_dir();
         $base_url = $upload_dir['baseurl'];
-        $settings = get_option('omtc_settings', array());
+        $settings = get_option('g33ki_settings', array());
         $cloud_base = $this->get_cloud_base_url($settings);
 
         foreach ($sources as $width => $source) {
@@ -246,7 +259,7 @@ class Offload_Media_To_Cloud {
             return $content;
         }
 
-        $settings = get_option('omtc_settings', array());
+        $settings = get_option('g33ki_settings', array());
         if (empty($settings['provider']) || empty($settings['bucket'])) {
             return $content;
         }
@@ -314,42 +327,42 @@ class Offload_Media_To_Cloud {
      * Render bulk offload page
      */
     public function render_bulk_offload_page() {
-        require_once OMTC_PLUGIN_DIR . 'includes/views/bulk-offload.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/views/bulk-offload.php';
     }
 
     /**
      * Render bulk restore page
      */
     public function render_bulk_restore_page() {
-        require_once OMTC_PLUGIN_DIR . 'includes/views/bulk-restore.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/views/bulk-restore.php';
     }
     
     /**
      * Render fix permissions page
      */
     public function render_fix_permissions_page() {
-        require_once OMTC_PLUGIN_DIR . 'includes/views/fix-permissions.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/views/fix-permissions.php';
     }
 
     /**
      * Render fix thumbnails page
      */
     public function render_fix_thumbnails_page() {
-        require_once OMTC_PLUGIN_DIR . 'includes/views/fix-thumbnails.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/views/fix-thumbnails.php';
     }
 
     /**
      * Render fix URLs page
      */
     public function render_fix_urls_page() {
-        require_once OMTC_PLUGIN_DIR . 'includes/views/fix-urls.php';
+        require_once G33KI_PLUGIN_DIR . 'includes/views/fix-urls.php';
     }
 
     /**
      * Add action links on Plugins page
      */
     public function plugin_action_links($links) {
-        $settings_link = '<a href="' . admin_url('admin.php?page=offload-media-to-cloud') . '">' . __('Settings', 'offload-media-to-cloud') . '</a>';
+        $settings_link = '<a href="' . admin_url('admin.php?page=g33ki-cloud-storage-for-media-library') . '">' . __('Settings', 'g33ki-cloud-storage-for-media-library') . '</a>';
         array_unshift($links, $settings_link);
         return $links;
     }
@@ -358,8 +371,8 @@ class Offload_Media_To_Cloud {
      * Add meta links on Plugins page (row meta)
      */
     public function plugin_row_meta($links, $file) {
-        if ($file === OMTC_PLUGIN_BASENAME) {
-            $links[] = '<a href="https://buymeacoffee.com/gunjanjaswal" target="_blank" style="color: #ff813f; font-weight: 600;">&#9749; Buy Me a Coffee</a>';
+        if ($file === G33KI_PLUGIN_BASENAME) {
+            // Note: Buy Me a Coffee link removed as per request
         }
         return $links;
     }
@@ -373,7 +386,7 @@ class Offload_Media_To_Cloud {
             return;
         }
 
-        $settings = get_option('omtc_settings', array());
+        $settings = get_option('g33ki_settings', array());
         if (empty($settings['remove_local_files'])) {
             return;
         }
@@ -386,8 +399,13 @@ class Offload_Media_To_Cloud {
             'fields'         => 'ids',
             // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Needed to track offload state via meta
             'meta_query'     => array(
+                'relation' => 'OR',
                 array(
-                    'key'     => 'omtc_remote_url',
+                    'key'     => 'g33ki_remote_url',
+                    'compare' => 'EXISTS',
+                ),
+                array(
+                    'key'     => 'g33ki_remote_url',
                     'compare' => 'EXISTS',
                 ),
             ),
@@ -406,11 +424,11 @@ class Offload_Media_To_Cloud {
             return;
         }
 
-        $restore_url = admin_url('admin.php?page=offload-bulk-restore');
+        $restore_url = admin_url('admin.php?page=g33ki-bulk-restore');
         echo '<div class="notice notice-warning">';
-        echo '<p><strong>' . esc_html__('Offload Media to Cloud', 'offload-media-to-cloud') . ':</strong> ';
-        echo esc_html__('Some media files exist only in cloud storage. If you deactivate this plugin, those media URLs will break.', 'offload-media-to-cloud') . ' ';
-        echo '<a href="' . esc_url($restore_url) . '"><strong>' . esc_html__('Restore local files first', 'offload-media-to-cloud') . '</strong></a>';
+        echo '<p><strong>' . esc_html__('G33ki Cloud Storage For Media Library', 'g33ki-cloud-storage-for-media-library') . ':</strong> ';
+        echo esc_html__('Some media files exist only in cloud storage. If you deactivate this plugin, those media URLs will break.', 'g33ki-cloud-storage-for-media-library') . ' ';
+        echo '<a href="' . esc_url($restore_url) . '"><strong>' . esc_html__('Restore local files first', 'g33ki-cloud-storage-for-media-library') . '</strong></a>';
         echo '</p></div>';
     }
 
@@ -419,7 +437,7 @@ class Offload_Media_To_Cloud {
      */
     public static function activate() {
         // Create options table if needed
-        add_option('omtc_settings', array());
+        add_option('g33ki_settings', array());
         flush_rewrite_rules();
     }
     
@@ -430,3 +448,5 @@ class Offload_Media_To_Cloud {
         flush_rewrite_rules();
     }
 }
+
+

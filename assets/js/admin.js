@@ -10,6 +10,52 @@ jQuery(document).ready(function($) {
         }
     }).trigger('change');
     
+    // Save settings
+    $('#g33ki-settings-form').on('submit', function(e) {
+        e.preventDefault();
+        var $form = $(this);
+        var $submit = $form.find('input[type="submit"]');
+        var $status = $('#connection-status');
+        
+        $submit.prop('disabled', true).val('Saving...');
+        $status.hide();
+        
+        $.ajax({
+            url: g33ki_ajax.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'g33ki_save_settings',
+                nonce: g33ki_ajax.nonce,
+                settings: {
+                    provider: $('#provider').val(),
+                    access_key: $('#access_key').val(),
+                    secret_key: $('#secret_key').val(),
+                    bucket: $('#bucket').val(),
+                    region: $('#region').val(),
+                    cdn_url: $('#cdn_url').val(),
+                    path_prefix: $('#path_prefix').val(),
+                    remove_local_files: $('#remove_local_files').is(':checked') ? 1 : 0
+                }
+            },
+            success: function(response) {
+                $status.removeClass('success error');
+                if (response.success) {
+                    $status.addClass('success').html('<strong>' + response.data.message + '</strong>');
+                } else {
+                    $status.addClass('error').html('<strong>Error:</strong> ' + response.data.message);
+                }
+                $status.show();
+            },
+            error: function() {
+                $status.removeClass('success error').addClass('error');
+                $status.html('<strong>Error:</strong> Failed to save settings.').show();
+            },
+            complete: function() {
+                $submit.prop('disabled', false).val('💾 Save Settings');
+            }
+        });
+    });
+    
     // Test connection
     $('#test-connection').on('click', function() {
         var $button = $(this);
@@ -33,11 +79,11 @@ jQuery(document).ready(function($) {
         $status.hide();
         
         $.ajax({
-            url: omtc_ajax.ajax_url,
+            url: g33ki_ajax.ajax_url,
             type: 'POST',
             data: {
-                action: 'omtc_test_connection',
-                nonce: omtc_ajax.nonce,
+                action: 'g33ki_test_connection',
+                nonce: g33ki_ajax.nonce,
                 provider: provider,
                 credentials: credentials
             },
@@ -70,11 +116,11 @@ jQuery(document).ready(function($) {
 
         // Get restore count on page load
         $.ajax({
-            url: omtc_ajax.ajax_url,
+            url: g33ki_ajax.ajax_url,
             type: 'POST',
             data: {
-                action: 'omtc_get_restore_count',
-                nonce: omtc_ajax.nonce
+                action: 'g33ki_get_restore_count',
+                nonce: g33ki_ajax.nonce
             },
             success: function(response) {
                 if (response.success) {
@@ -112,12 +158,12 @@ jQuery(document).ready(function($) {
 
             function restoreBatch() {
                 $.ajax({
-                    url: omtc_ajax.ajax_url,
+                    url: g33ki_ajax.ajax_url,
                     type: 'POST',
                     timeout: 120000,
                     data: {
-                        action: 'omtc_bulk_restore',
-                        nonce: omtc_ajax.nonce,
+                        action: 'g33ki_bulk_restore',
+                        nonce: g33ki_ajax.nonce,
                         offset: 0
                     },
                     success: function(response) {
@@ -181,11 +227,11 @@ jQuery(document).ready(function($) {
         
         // Get media count on page load
         $.ajax({
-            url: omtc_ajax.ajax_url,
+            url: g33ki_ajax.ajax_url,
             type: 'POST',
             data: {
-                action: 'omtc_get_media_count',
-                nonce: omtc_ajax.nonce
+                action: 'g33ki_get_media_count',
+                nonce: g33ki_ajax.nonce
             },
             success: function(response) {
                 if (response.success) {
@@ -223,12 +269,12 @@ jQuery(document).ready(function($) {
 
             function processBatch() {
                 $.ajax({
-                    url: omtc_ajax.ajax_url,
+                    url: g33ki_ajax.ajax_url,
                     type: 'POST',
                     timeout: 120000,
                     data: {
-                        action: 'omtc_bulk_offload',
-                        nonce: omtc_ajax.nonce,
+                        action: 'g33ki_bulk_offload',
+                        nonce: g33ki_ajax.nonce,
                         offset: 0
                     },
                     success: function(response) {
@@ -313,12 +359,12 @@ jQuery(document).ready(function($) {
 
             function scanBatch() {
                 $.ajax({
-                    url: omtc_ajax.ajax_url,
+                    url: g33ki_ajax.ajax_url,
                     type: 'POST',
                     timeout: 120000,
                     data: {
-                        action: 'omtc_scan_permissions',
-                        nonce: omtc_ajax.nonce,
+                        action: 'g33ki_scan_permissions',
+                        nonce: g33ki_ajax.nonce,
                         offset: offset
                     },
                     success: function(response) {
@@ -418,12 +464,12 @@ jQuery(document).ready(function($) {
                 var ids = batch.map(function(f) { return f.id; });
 
                 $.ajax({
-                    url: omtc_ajax.ajax_url,
+                    url: g33ki_ajax.ajax_url,
                     type: 'POST',
                     timeout: 120000,
                     data: {
-                        action: 'omtc_fix_permissions',
-                        nonce: omtc_ajax.nonce,
+                        action: 'g33ki_fix_permissions',
+                        nonce: g33ki_ajax.nonce,
                         ids: ids
                     },
                     success: function(response) {
@@ -486,12 +532,12 @@ jQuery(document).ready(function($) {
 
             function scanThumbBatch() {
                 $.ajax({
-                    url: omtc_ajax.ajax_url,
+                    url: g33ki_ajax.ajax_url,
                     type: 'POST',
                     timeout: 120000,
                     data: {
-                        action: 'omtc_scan_thumbnails',
-                        nonce: omtc_ajax.nonce,
+                        action: 'g33ki_scan_thumbnails',
+                        nonce: g33ki_ajax.nonce,
                         offset: offset
                     },
                     success: function(response) {
@@ -591,12 +637,12 @@ jQuery(document).ready(function($) {
                 var ids = batch.map(function(f) { return f.id; });
 
                 $.ajax({
-                    url: omtc_ajax.ajax_url,
+                    url: g33ki_ajax.ajax_url,
                     type: 'POST',
                     timeout: 120000,
                     data: {
-                        action: 'omtc_fix_thumbnails',
-                        nonce: omtc_ajax.nonce,
+                        action: 'g33ki_fix_thumbnails',
+                        nonce: g33ki_ajax.nonce,
                         ids: ids
                     },
                     success: function(response) {
@@ -651,9 +697,9 @@ jQuery(document).ready(function($) {
             mismatchedItems = [];
 
             function scanBatch(offset) {
-                $.post(omtc_ajax.ajax_url, {
-                    action: 'omtc_scan_urls',
-                    nonce: omtc_ajax.nonce,
+                $.post(g33ki_ajax.ajax_url, {
+                    action: 'g33ki_scan_urls',
+                    nonce: g33ki_ajax.nonce,
                     offset: offset
                 }, function(response) {
                     if (!response.success) {
@@ -684,7 +730,7 @@ jQuery(document).ready(function($) {
                     $('#scan-progress-bar').css('width', pct + '%');
                     $('#scan-progress-percentage').text(pct + '%');
                     $('#scan-progress-text').text(
-                        omtc_ajax.i18n.scanned + ' ' + data.scanned + ' / ' + data.total
+                        g33ki_ajax.i18n.scanned + ' ' + data.scanned + ' / ' + data.total
                     );
 
                     if (data.complete) {
@@ -698,7 +744,7 @@ jQuery(document).ready(function($) {
                             $('#scan-results-ok').hide();
                             $('#scan-results-mismatched').show().find('.notice').show();
                             $('#mismatched-count-text').text(
-                                mismatchedItems.length + ' ' + omtc_ajax.i18n.file_mismatched_found
+                                mismatchedItems.length + ' ' + g33ki_ajax.i18n.file_mismatched_found
                             );
                             $('#start-url-fix').show();
                         }
@@ -708,7 +754,7 @@ jQuery(document).ready(function($) {
                         scanBatch(data.scanned);
                     }
                 }).fail(function() {
-                    alert(omtc_ajax.i18n.ajax_failed);
+                    alert(g33ki_ajax.i18n.ajax_failed);
                     $btn.prop('disabled', false);
                 });
             }
@@ -735,9 +781,9 @@ jQuery(document).ready(function($) {
                 var batch = ids.slice(0, 20);
                 var remaining = ids.slice(20);
 
-                $.post(omtc_ajax.ajax_url, {
-                    action: 'omtc_fix_urls',
-                    nonce: omtc_ajax.nonce,
+                $.post(g33ki_ajax.ajax_url, {
+                    action: 'g33ki_fix_urls',
+                    nonce: g33ki_ajax.nonce,
                     ids: batch
                 }, function(response) {
                     if (!response.success) {
@@ -757,7 +803,7 @@ jQuery(document).ready(function($) {
                     var pct = Math.round((totalFixed / totalToFix) * 100);
                     $('#fix-progress-bar').css('width', pct + '%');
                     $('#fix-progress-text').text(
-                        omtc_ajax.i18n.fixed + ' ' + totalFixed + ' / ' + totalToFix
+                        g33ki_ajax.i18n.fixed + ' ' + totalFixed + ' / ' + totalToFix
                     );
 
                     if (remaining.length > 0) {
@@ -766,14 +812,14 @@ jQuery(document).ready(function($) {
                         $('#fix-progress').hide();
                         $('#fix-complete').show();
                         $('#fix-complete-text').text(
-                            totalFixed + ' ' + omtc_ajax.i18n.file_updated
+                            totalFixed + ' ' + g33ki_ajax.i18n.file_updated
                         );
 
                         if (allErrors.length > 0) {
                             $('#fix-errors').show();
                             $.each(allErrors, function(i, err) {
                                 $('#fix-error-list').append(
-                                    '<li>' + omtc_ajax.i18n.attachment + ' #' + err.id + ': ' + $('<span>').text(err.error).html() + '</li>'
+                                    '<li>' + g33ki_ajax.i18n.attachment + ' #' + err.id + ': ' + $('<span>').text(err.error).html() + '</li>'
                                 );
                             });
                         }
@@ -782,7 +828,7 @@ jQuery(document).ready(function($) {
                         $('#start-url-scan').prop('disabled', false);
                     }
                 }).fail(function() {
-                    alert(omtc_ajax.i18n.ajax_failed);
+                    alert(g33ki_ajax.i18n.ajax_failed);
                     $btn.prop('disabled', false);
                     $('#start-url-scan').prop('disabled', false);
                 });
@@ -792,3 +838,4 @@ jQuery(document).ready(function($) {
         });
     }
 });
+

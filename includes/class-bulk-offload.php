@@ -7,21 +7,21 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class OMTC_Bulk_Offload {
+class G33KI_Bulk_Offload {
     
     public function __construct() {
-        add_action('wp_ajax_omtc_get_media_count', array($this, 'get_media_count_ajax'));
-        add_action('wp_ajax_omtc_bulk_offload', array($this, 'bulk_offload_ajax'));
+        add_action('wp_ajax_g33ki_get_media_count', array($this, 'get_media_count_ajax'));
+        add_action('wp_ajax_g33ki_bulk_offload', array($this, 'bulk_offload_ajax'));
     }
     
     /**
      * Get count of media files not yet offloaded
      */
     public function get_media_count_ajax() {
-        check_ajax_referer('omtc_ajax_nonce', 'nonce');
+        check_ajax_referer('g33ki_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'g33ki-cloud-storage-for-media-library')));
         }
         
         $args = array(
@@ -31,7 +31,7 @@ class OMTC_Bulk_Offload {
             // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Needed to track offload state via meta
             'meta_query' => array(
                 array(
-                    'key' => 'omtc_remote_url',
+                    'key' => 'g33ki_remote_url',
                     'compare' => 'NOT EXISTS'
                 )
             )
@@ -47,10 +47,10 @@ class OMTC_Bulk_Offload {
      * Bulk offload media files
      */
     public function bulk_offload_ajax() {
-        check_ajax_referer('omtc_ajax_nonce', 'nonce');
+        check_ajax_referer('g33ki_ajax_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'g33ki-cloud-storage-for-media-library')));
         }
         
         $batch_size = 3; // Small batches to avoid Cloudflare/server timeouts
@@ -62,7 +62,7 @@ class OMTC_Bulk_Offload {
             // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Needed to track offload state via meta
             'meta_query' => array(
                 array(
-                    'key' => 'omtc_remote_url',
+                    'key' => 'g33ki_remote_url',
                     'compare' => 'NOT EXISTS'
                 )
             )
@@ -73,11 +73,11 @@ class OMTC_Bulk_Offload {
         $errors = array();
         
         if ($query->have_posts()) {
-            $settings = get_option('omtc_settings', array());
+            $settings = get_option('g33ki_settings', array());
             $provider = $this->get_provider($settings);
             
             if (!$provider) {
-                wp_send_json_error(array('message' => __('Provider not configured', 'offload-media-to-cloud')));
+                wp_send_json_error(array('message' => __('Provider not configured', 'g33ki-cloud-storage-for-media-library')));
             }
             
             while ($query->have_posts()) {
@@ -115,7 +115,7 @@ class OMTC_Bulk_Offload {
         $file_path = get_attached_file($attachment_id);
         
         if (!file_exists($file_path)) {
-            return array('success' => false, 'message' => __('File not found', 'offload-media-to-cloud'));
+            return array('success' => false, 'message' => __('File not found', 'g33ki-cloud-storage-for-media-library'));
         }
         
         // Check if file already exists in cloud (e.g. after restore + reactivate)
@@ -137,8 +137,8 @@ class OMTC_Bulk_Offload {
             $url = $result['url'];
         }
 
-        update_post_meta($attachment_id, 'omtc_remote_url', $url);
-        update_post_meta($attachment_id, 'omtc_remote_path', $remote_path);
+        update_post_meta($attachment_id, 'g33ki_remote_url', $url);
+        update_post_meta($attachment_id, 'g33ki_remote_path', $remote_path);
 
         // Upload thumbnails
         $metadata = wp_get_attachment_metadata($attachment_id);
@@ -159,7 +159,7 @@ class OMTC_Bulk_Offload {
                     }
 
                     if ($thumb_url) {
-                        update_post_meta($attachment_id, 'omtc_remote_url_' . $size, $thumb_url);
+                        update_post_meta($attachment_id, 'g33ki_remote_url_' . $size, $thumb_url);
                     }
                 }
             }
@@ -181,7 +181,7 @@ class OMTC_Bulk_Offload {
             return null;
         }
         
-        $provider_class = 'OMTC_' . ucfirst($settings['provider']) . '_Provider';
+        $provider_class = 'G33KI_' . ucfirst($settings['provider']) . '_Provider';
         if (!class_exists($provider_class)) {
             return null;
         }
@@ -222,4 +222,6 @@ class OMTC_Bulk_Offload {
 }
 
 // Initialize
-new OMTC_Bulk_Offload();
+new G33KI_Bulk_Offload();
+
+

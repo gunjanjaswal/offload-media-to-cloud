@@ -1,19 +1,20 @@
-=== Offload Media to Cloud ===
+=== G33ki Cloud Storage For Media Library ===
 Contributors: gunjanjaswal
-Donate link: https://buymeacoffee.com/gunjanjaswal
-Tags: s3, cloud storage, media offload, cdn, performance
+Tags: offload media library, move media library to cloud, s3, cloud storage, media offload, cdn, performance, google cloud storage, digitalocean spaces, cloud storage for wordpress
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Offload WordPress media to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage. No SDK required. Built-in repair tools.
+Effortlessly offload your WordPress media library to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage. Seamlessly move media library to cloud with built-in repair tools and zero dependencies.
 
 == Description ==
 
-**Offload Media to Cloud** automatically transfers your images, videos, documents, and all media files to leading cloud storage providers. Improve your website's performance, reduce hosting costs, and leverage CDN delivery — all with zero manual effort and no external dependencies.
+**G33ki Cloud Storage For Media Library** is the ultimate solution to **offload media library** assets, including images, videos, and documents, to leading cloud storage providers. By choosing to **move media library to cloud**, you significantly improve your website's performance, reduce server hosting costs, and leverage global CDN delivery — all with zero manual effort and no external dependencies.
+
+Whether you're looking to offload WordPress media to Amazon S3, or seeking a cost-effective way to store files on DigitalOcean Spaces, this plugin handles it all automatically.
 
 = Key Features =
 
@@ -142,7 +143,7 @@ Used to store and serve your media files globally.
 
 1. Log in to your WordPress admin panel
 2. Navigate to Plugins > Add New
-3. Search for "Offload Media to Cloud"
+3. Search for "G33ki Cloud Storage For Media Library" or "offload media library"
 4. Click "Install Now" and then "Activate"
 
 = Manual Installation =
@@ -157,7 +158,7 @@ No additional setup steps, libraries, or Composer required. The plugin works imm
 
 = Configuration =
 
-1. Navigate to **Offload Media > Settings** in your WordPress admin
+1. Navigate to **G33ki Cloud > Settings** in your WordPress admin
 2. Select your storage provider (Amazon S3, DigitalOcean Spaces, or Google Cloud Storage)
 3. Enter your credentials:
    * Access Key / Access Key ID
@@ -189,7 +190,7 @@ Files are first uploaded to your WordPress server, then automatically copied to 
 
 = What happens to my existing media files? =
 
-Existing media files are not automatically migrated. Use the **Bulk Offload** tool under Offload Media > Bulk Offload to migrate existing files with one click.
+Existing media files are not automatically migrated. Use the **Bulk Offload** tool under G33ki Cloud > Bulk Offload to migrate existing files with one click.
 
 = Can I remove local files after uploading to cloud storage? =
 
@@ -201,19 +202,19 @@ Absolutely! Enter your CDN URL (CloudFront, KeyCDN, BunnyCDN, etc.) in the "CDN 
 
 = What if I deactivate the plugin? =
 
-Before deactivating, go to **Offload Media > Restore Local** to download all cloud-stored files back to your server. A warning notice on the Plugins page reminds you if local files are missing. After restoring, WordPress will serve media from your server as normal.
+Before deactivating, go to **G33ki Cloud > Restore Local** to download all cloud-stored files back to your server. A warning notice on the Plugins page reminds you if local files are missing. After restoring, WordPress will serve media from your server as normal.
 
 = Some images show 403 AccessDenied errors after bulk offload. How do I fix this? =
 
-Go to **Offload Media > Fix Permissions**. This tool scans all offloaded files and detects which ones are returning errors. Click "Fix All Broken Files" to set the correct public-read ACL on each file.
+Go to **G33ki Cloud > Fix Permissions**. This tool scans all offloaded files and detects which ones are returning errors. Click "Fix All Broken Files" to set the correct public-read ACL on each file.
 
 = Some image sizes (thumbnails) are not loading from the cloud. How do I fix this? =
 
-Go to **Offload Media > Fix Thumbnails**. This tool scans all offloaded attachments and finds which thumbnail sizes are missing from the cloud. Click "Fix Missing Thumbnails" to upload them.
+Go to **G33ki Cloud > Fix Thumbnails**. This tool scans all offloaded attachments and finds which thumbnail sizes are missing from the cloud. Click "Fix Missing Thumbnails" to upload them.
 
 = I changed my CDN URL / bucket / region and now images are broken. How do I fix this? =
 
-Go to **Offload Media > Fix URLs**. This tool detects when stored URLs don't match your current settings. Click "Fix All Mismatched URLs" to update them — no re-uploading needed.
+Go to **G33ki Cloud > Fix URLs**. This tool detects when stored URLs don't match your current settings. Click "Fix All Mismatched URLs" to update them — no re-uploading needed.
 
 = The bulk offload stops or times out midway. What do I do? =
 
@@ -257,7 +258,7 @@ Yes! All credentials are stored securely in your WordPress database. Data is tra
 
 * Visit the WordPress.org support forum
 * Contact the developer: hello@gunjanjaswal.me
-* Report bugs on [GitHub](https://github.com/gunjanjaswal/offload-media-to-cloud)
+* Report bugs on [GitHub](https://github.com/gunjanjaswal/g33ki-cloud-storage-for-media-library)
 
 == Screenshots ==
 
@@ -271,6 +272,11 @@ Yes! All credentials are stored securely in your WordPress database. Data is tra
 8. Plugin action links — quick access to settings and support
 
 == Changelog ==
+
+= 1.2.2 =
+* Rebranding: Renamed to G33ki Cloud Storage For Media Library
+* SEO: Improved description for better search visibility on "offload media library" and "move media to cloud" keywords
+* Cleanup: Removed Buy Me a Coffee links
 
 = 1.2.1 =
 * Fix: Removed inline script tag from fix-urls.php template to adhere to WP enqueuing guidelines
@@ -306,7 +312,6 @@ Yes! All credentials are stored securely in your WordPress database. Data is tra
 * Restore local files tool — download cloud media back to server
 * Deactivation safety warning when local files are missing
 * Custom path prefix support
-* Settings and Buy Me a Coffee links on Plugins page
 
 == Upgrade Notice ==
 
@@ -324,8 +329,4 @@ This plugin does not collect or store any personal data. All cloud storage crede
 
 Developed by [Gunjan Jaswal](https://gunjanjaswal.me)
 
-If you find this plugin helpful, please consider:
-
-* [Buy Me a Coffee](https://buymeacoffee.com/gunjanjaswal)
-* Rating this plugin on WordPress.org
-* Sharing with other WordPress users
+If you find this plugin helpful, please consider rating this plugin on WordPress.org or sharing with other WordPress users.

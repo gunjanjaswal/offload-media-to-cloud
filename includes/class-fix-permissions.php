@@ -7,21 +7,21 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class OMTC_Fix_Permissions {
+class G33KI_Fix_Permissions {
 
     public function __construct() {
-        add_action('wp_ajax_omtc_scan_permissions', array($this, 'scan_permissions_ajax'));
-        add_action('wp_ajax_omtc_fix_permissions', array($this, 'fix_permissions_ajax'));
+        add_action('wp_ajax_g33ki_scan_permissions', array($this, 'scan_permissions_ajax'));
+        add_action('wp_ajax_g33ki_fix_permissions', array($this, 'fix_permissions_ajax'));
     }
 
     /**
      * Scan for offloaded files that return non-200 (private/broken)
      */
     public function scan_permissions_ajax() {
-        check_ajax_referer('omtc_ajax_nonce', 'nonce');
+        check_ajax_referer('g33ki_ajax_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'g33ki-cloud-storage-for-media-library')));
         }
 
         $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
@@ -36,7 +36,7 @@ class OMTC_Fix_Permissions {
             // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Needed to track offload state via meta
             'meta_query'     => array(
                 array(
-                    'key'     => 'omtc_remote_url',
+                    'key'     => 'g33ki_remote_url',
                     'compare' => 'EXISTS',
                 ),
             ),
@@ -47,7 +47,10 @@ class OMTC_Fix_Permissions {
         $checked = 0;
 
         foreach ($query->posts as $attachment_id) {
-            $remote_url = get_post_meta($attachment_id, 'omtc_remote_url', true);
+            $remote_url = get_post_meta($attachment_id, 'g33ki_remote_url', true);
+            if (empty($remote_url)) {
+                $remote_url = get_post_meta($attachment_id, 'omtc_remote_url', true);
+            }
             if (empty($remote_url)) {
                 continue;
             }
@@ -92,23 +95,23 @@ class OMTC_Fix_Permissions {
      * Fix a batch of broken files by re-uploading with public-read ACL
      */
     public function fix_permissions_ajax() {
-        check_ajax_referer('omtc_ajax_nonce', 'nonce');
+        check_ajax_referer('g33ki_ajax_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Permission denied', 'g33ki-cloud-storage-for-media-library')));
         }
 
         $ids = isset($_POST['ids']) ? array_map('intval', (array) $_POST['ids']) : array();
 
         if (empty($ids)) {
-            wp_send_json_error(array('message' => __('No files to fix', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('No files to fix', 'g33ki-cloud-storage-for-media-library')));
         }
 
-        $settings = get_option('omtc_settings', array());
+        $settings = get_option('g33ki_settings', array());
         $provider = $this->get_provider($settings);
 
         if (!$provider) {
-            wp_send_json_error(array('message' => __('Provider not configured', 'offload-media-to-cloud')));
+            wp_send_json_error(array('message' => __('Provider not configured', 'g33ki-cloud-storage-for-media-library')));
         }
 
         $fixed = 0;
@@ -116,7 +119,10 @@ class OMTC_Fix_Permissions {
 
         foreach ($ids as $attachment_id) {
             $file_path = get_attached_file($attachment_id);
-            $remote_path = get_post_meta($attachment_id, 'omtc_remote_path', true);
+            $remote_path = get_post_meta($attachment_id, 'g33ki_remote_path', true);
+            if (empty($remote_path)) {
+                $remote_path = get_post_meta($attachment_id, 'omtc_remote_path', true);
+            }
 
             if (empty($remote_path)) {
                 $errors[] = array('id' => $attachment_id, 'error' => 'No remote path');
@@ -131,7 +137,10 @@ class OMTC_Fix_Permissions {
                 $metadata = wp_get_attachment_metadata($attachment_id);
                 if (isset($metadata['sizes']) && is_array($metadata['sizes'])) {
                     foreach ($metadata['sizes'] as $size => $size_data) {
-                        $thumb_remote_path = get_post_meta($attachment_id, 'omtc_remote_url_' . $size, true);
+                        $thumb_remote_path = get_post_meta($attachment_id, 'g33ki_remote_url_' . $size, true);
+                        if (empty($thumb_remote_path)) {
+                            $thumb_remote_path = get_post_meta($attachment_id, 'omtc_remote_url_' . $size, true);
+                        }
                         if (!empty($thumb_remote_path)) {
                             $upload_dir = wp_upload_dir();
                             $base_dir = dirname($file_path);
@@ -181,7 +190,7 @@ class OMTC_Fix_Permissions {
             return null;
         }
 
-        $provider_class = 'OMTC_' . ucfirst($settings['provider']) . '_Provider';
+        $provider_class = 'G33KI_' . ucfirst($settings['provider']) . '_Provider';
         if (!class_exists($provider_class)) {
             return null;
         }
@@ -198,4 +207,6 @@ class OMTC_Fix_Permissions {
     }
 }
 
-new OMTC_Fix_Permissions();
+new G33KI_Fix_Permissions();
+
+
