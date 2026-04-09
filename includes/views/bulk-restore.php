@@ -8,21 +8,21 @@ if (!defined('ABSPATH')) {
 }
 
 $g33ki_settings = get_option('g33ki_settings', array());
-$G33KI_is_configured = !empty($g33ki_settings['provider']) && !empty($g33ki_settings['bucket']);
+$g33ki_is_configured = !empty($g33ki_settings['provider']) && !empty($g33ki_settings['bucket']);
 ?>
 
-<div class="wrap omtc-bulk-offload-wrap">
+<div class="wrap g33ki-bulk-offload-wrap">
     <h1><?php esc_html_e('Restore Local Files', 'g33ki-cloud-storage-for-media-library'); ?></h1>
 
-    <div class="omtc-bulk-container">
-        <?php if (!$G33KI_is_configured): ?>
+    <div class="g33ki-bulk-container">
+        <?php if (!$g33ki_is_configured): ?>
             <div class="notice notice-warning">
                 <p><strong><?php esc_html_e('Configuration Required', 'g33ki-cloud-storage-for-media-library'); ?></strong></p>
                 <p><?php esc_html_e('Please configure your cloud storage settings first.', 'g33ki-cloud-storage-for-media-library'); ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=g33ki-cloud-storage-for-media-library')); ?>" style="font-weight: 600;"><?php esc_html_e('Go to Settings', 'g33ki-cloud-storage-for-media-library'); ?></a></p>
             </div>
         <?php else: ?>
-            <div class="omtc-bulk-info">
+            <div class="g33ki-bulk-info">
                 <p><?php esc_html_e('This tool downloads cloud-stored media files back to your local server. Use this before deactivating the plugin if you enabled "Remove Local Files".', 'g33ki-cloud-storage-for-media-library'); ?></p>
                 <p><strong><?php esc_html_e('Note:', 'g33ki-cloud-storage-for-media-library'); ?></strong> <?php esc_html_e('Only files missing locally will be downloaded. Files already on the server are skipped.', 'g33ki-cloud-storage-for-media-library'); ?></p>
             </div>

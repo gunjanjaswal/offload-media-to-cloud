@@ -1,6 +1,6 @@
 === G33ki Cloud Storage For Media Library ===
 Contributors: gunjanjaswal
-Tags: offload media library, move media library to cloud, s3, cloud storage, media offload, cdn, performance, google cloud storage, digitalocean spaces, cloud storage for wordpress
+Tags: offload media library, move media library to cloud, cloud storage, s3, cdn
 Requires at least: 5.0
 Tested up to: 6.9
 Stable tag: 1.2.2
@@ -8,7 +8,7 @@ Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Effortlessly offload your WordPress media library to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage. Seamlessly move media library to cloud with built-in repair tools and zero dependencies.
+Effortlessly offload media library assets to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage. Seamlessly move media library to cloud.
 
 == Description ==
 

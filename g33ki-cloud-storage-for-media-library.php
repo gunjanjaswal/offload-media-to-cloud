@@ -25,7 +25,10 @@ define('G33KI_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 // Settings migration logic (OMTC to G33KI)
 function g33ki_migrate_settings() {
-    if (!get_option('g33ki_settings') && $old_settings = get_option('omtc_settings')) {
+    $current = get_option('g33ki_settings');
+    $old_settings = get_option('omtc_settings');
+    
+    if ((empty($current) || empty($current['provider'])) && !empty($old_settings)) {
         update_option('g33ki_settings', $old_settings);
     }
 }

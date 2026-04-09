@@ -8,14 +8,14 @@ if (!defined('ABSPATH')) {
 }
 
 $g33ki_settings = get_option('g33ki_settings', array());
-$G33KI_is_configured = !empty($g33ki_settings['provider']) && !empty($g33ki_settings['bucket']);
+$g33ki_is_configured = !empty($g33ki_settings['provider']) && !empty($g33ki_settings['bucket']);
 ?>
 
 <div class="wrap g33ki-bulk-offload-wrap">
     <h1>📦 <?php esc_html_e('Bulk Offload Existing Media', 'g33ki-cloud-storage-for-media-library'); ?></h1>
     
     <div class="g33ki-bulk-container">
-        <?php if (!$G33KI_is_configured): ?>
+        <?php if (!$g33ki_is_configured): ?>
             <div class="notice notice-warning">
                 <p><strong>⚠️ <?php esc_html_e('Configuration Required', 'g33ki-cloud-storage-for-media-library'); ?></strong></p>
                 <p><?php esc_html_e('Please configure your cloud storage settings before using bulk offload.', 'g33ki-cloud-storage-for-media-library'); ?> 

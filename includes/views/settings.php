@@ -8,11 +8,11 @@ if (!defined('ABSPATH')) {
 }
 
 $g33ki_settings = get_option('g33ki_settings', array());
-$G33KI_provider = isset($g33ki_settings['provider']) ? $g33ki_settings['provider'] : '';
+$g33ki_provider = isset($g33ki_settings['provider']) ? $g33ki_settings['provider'] : '';
 ?>
 
 <div class="wrap g33ki-settings-wrap">
-    <h1>⚡ <?php esc_html_e('G33ki Cloud Settings', 'g33ki-cloud-storage-for-media-library'); ?></h1>
+    <h1>⚡ <?php esc_html_e('Cloud Storage For Media Library Settings', 'g33ki-cloud-storage-for-media-library'); ?></h1>
     
     <div class="g33ki-settings-container">
         <form id="g33ki-settings-form" method="post">

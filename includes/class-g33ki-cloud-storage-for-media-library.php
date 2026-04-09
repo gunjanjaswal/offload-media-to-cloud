@@ -93,8 +93,8 @@ class G33ki_Cloud_Storage_For_Media_Library {
      */
     public function admin_menu() {
         add_menu_page(
-            __('G33ki Cloud', 'g33ki-cloud-storage-for-media-library'),
-            __('G33ki Cloud', 'g33ki-cloud-storage-for-media-library'),
+            __('Cloud Storage For Media Library', 'g33ki-cloud-storage-for-media-library'),
+            __('Cloud Storage For Media Library', 'g33ki-cloud-storage-for-media-library'),
             'manage_options',
             'g33ki-cloud-storage-for-media-library',
             array($this->settings, 'render_settings_page'),
