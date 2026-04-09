@@ -161,7 +161,7 @@ class G33KI_Fix_Urls {
      */
     private function build_url_from_path($remote_path, $settings) {
         $base_url = $this->get_cloud_base_url($settings);
-        return $base_url . $remote_path;
+        return esc_url($base_url . $remote_path);
     }
 
     /**

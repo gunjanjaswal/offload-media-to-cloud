@@ -268,7 +268,7 @@ class G33ki_Cloud_Storage_For_Media_Library {
         $base_url = $upload_dir['baseurl'];
         $cloud_base = $this->get_cloud_base_url($settings);
         $prefix = !empty($settings['path_prefix']) ? trailingslashit($settings['path_prefix']) : '';
-        $cloud_url = $cloud_base . $prefix;
+        $cloud_url = esc_url($cloud_base . $prefix);
 
         // Replace full URL (https)
         $content = str_replace($base_url . '/', $cloud_url, $content);
