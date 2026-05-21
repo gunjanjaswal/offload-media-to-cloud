@@ -4,7 +4,7 @@ Tags: offload media library, move media library to cloud, cloud storage, s3, cdn
 Requires at least: 5.0
 Tested up to: 7.0
 Stable tag: 1.2.3
-Requires PHP: 7.2
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://ko-fi.com/gunjanjaswal
@@ -276,6 +276,7 @@ Yes! All credentials are stored securely in your WordPress database. Data is tra
 
 = 1.2.3 =
 * Updated "Tested up to" to WordPress 7.0.
+* Bumped minimum PHP requirement to 7.4 (WordPress 7.0 dropped support for PHP 7.2 and 7.3).
 * Added "Support on Ko-fi" (https://ko-fi.com/gunjanjaswal) and "Contact Developer" links to plugin row meta on the Plugins screen.
 * Added `Requires at least`, `Tested up to`, and `Requires PHP` headers to the main plugin file.
 

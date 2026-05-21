@@ -5,7 +5,7 @@
 ### Seamlessly offload WordPress media library to cloud storage — move media library to cloud with ease.
 
 [![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-21759B?style=for-the-badge&logo=wordpress&logoColor=white)](https://wordpress.org)
-[![PHP](https://img.shields.io/badge/PHP-7.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+[![PHP](https://img.shields.io/badge/PHP-7.4%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
 [![License](https://img.shields.io/badge/License-GPLv2-E74C3C?style=for-the-badge)](https://www.gnu.org/licenses/gpl-2.0.html)
 [![Version](https://img.shields.io/badge/Version-1.2.3-2ECC71?style=for-the-badge)](https://github.com/gunjanjaswal/g33ki-cloud-storage-for-media-library/releases)
 [![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/gunjanjaswal)
@@ -277,6 +277,7 @@ g33ki-cloud-storage-for-media-library/
 
 ### 1.2.3
 - Updated "Tested up to" to WordPress 7.0.
+- Bumped minimum PHP requirement to 7.4 (WordPress 7.0 dropped support for PHP 7.2 and 7.3).
 - Added "Support on Ko-fi" (https://ko-fi.com/gunjanjaswal) and "Contact Developer" links to plugin row meta on the Plugins screen.
 - Added `Requires at least`, `Tested up to`, and `Requires PHP` headers to the main plugin file.
 
