@@ -7,7 +7,7 @@
 [![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-21759B?style=for-the-badge&logo=wordpress&logoColor=white)](https://wordpress.org)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
 [![License](https://img.shields.io/badge/License-GPLv2-E74C3C?style=for-the-badge)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-1.2.3-2ECC71?style=for-the-badge)](https://github.com/gunjanjaswal/g33ki-cloud-storage-for-media-library/releases)
+[![Version](https://img.shields.io/badge/Version-1.2.4-2ECC71?style=for-the-badge)](https://github.com/gunjanjaswal/g33ki-cloud-storage-for-media-library/releases)
 [![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/gunjanjaswal)
 
 <br>
@@ -274,6 +274,12 @@ g33ki-cloud-storage-for-media-library/
 ---
 
 ## 📝 Changelog
+
+### 1.2.4
+- **WordPress 7.0 Connectors API integration (tested against `D:\wamp64\www\wordpress7`):** registers Amazon S3, DigitalOcean Spaces, and Google Cloud Storage as `cloud_storage` connectors on the `wp_connectors_init` action.
+- Each provider's connector links back to this plugin's settings page for credential management (`credentials_url`).
+- The plugin stores multiple credentials per provider (`access_key`, `secret_key`, `bucket`, `region`) inside one option `g33ki_settings`. The Connectors API's `api_key` auth method only handles a single setting value, so connectors are registered with `method: none` to act as informational/navigation entries. Full multi-field central management will land once core supports it (or after a future option refactor).
+- Added `g33ki_register_connectors` action hook so third-party code can register richer connectors against the same providers.
 
 ### 1.2.3
 - Updated "Tested up to" to WordPress 7.0.

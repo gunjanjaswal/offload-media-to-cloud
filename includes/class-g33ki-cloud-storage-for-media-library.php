@@ -373,6 +373,7 @@ class G33ki_Cloud_Storage_For_Media_Library {
      */
     public function plugin_row_meta($links, $file) {
         if ($file === G33KI_PLUGIN_BASENAME) {
+            $links[] = '<a href="https://wordpress.org/support/plugin/g33ki-cloud-storage-for-media-library/" target="_blank">' . __('Plugin Support', 'g33ki-cloud-storage-for-media-library') . '</a>';
             $links[] = '<a href="mailto:hello@gunjanjaswal.me">' . __('Contact Developer', 'g33ki-cloud-storage-for-media-library') . '</a>';
         }
         return $links;

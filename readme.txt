@@ -3,7 +3,7 @@ Contributors: gunjanjaswal
 Tags: offload media library, move media library to cloud, cloud storage, s3, cdn
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -274,6 +274,11 @@ Yes! All credentials are stored securely in your WordPress database. Data is tra
 
 == Changelog ==
 
+= 1.2.4 =
+* WordPress 7.0 Connectors API integration: registers Amazon S3, DigitalOcean Spaces, and Google Cloud Storage as `cloud_storage` connectors on the `wp_connectors_init` action. Each connector links to this plugin's settings page for credential management.
+* The plugin's settings array (`g33ki_settings`) stores multiple credentials per provider (access_key, secret_key, bucket, region). The Connectors API's `api_key` method handles a single setting value, so connectors are registered with `method: none` and the credentials_url points back to this plugin's settings screen. Full multi-field central management will land once core supports it (or after a future option refactor).
+* Added `g33ki_register_connectors` action so third-party code can register richer connectors against the same providers.
+
 = 1.2.3 =
 * Updated "Tested up to" to WordPress 7.0.
 * Bumped minimum PHP requirement to 7.4 (WordPress 7.0 dropped support for PHP 7.2 and 7.3).
@@ -321,6 +326,9 @@ Yes! All credentials are stored securely in your WordPress database. Data is tra
 * Custom path prefix support
 
 == Upgrade Notice ==
+
+= 1.2.4 =
+WordPress 7.0 Connectors API forward-compat: cloud-storage credentials registered with the central Connections screen when available. No breaking changes; graceful fallback on older WP.
 
 = 1.2.3 =
 Compatibility with WordPress 7.0; Ko-fi support + Contact Developer row meta added.
