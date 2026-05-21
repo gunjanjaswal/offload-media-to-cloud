@@ -87,6 +87,13 @@ $G33KI_is_configured = !empty($g33ki_settings['provider']) && !empty($g33ki_sett
             </p>
         <?php endif; ?>
     </div>
+
+    <div class="g33ki-info-box" style="margin-top: 30px; padding: 20px; background: #fff; border-left: 4px solid #0073aa; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
+        <a href="https://ko-fi.com/gunjanjaswal" target="_blank" class="button button-secondary" style="color:#0073aa; font-weight:bold;">
+            <?php esc_html_e('☕ Support on Ko-fi', 'g33ki-cloud-storage-for-media-library'); ?>
+        </a>
+        <span style="margin-left: 8px; color: #666;"><?php esc_html_e('Plugin helpful? Back the development on Ko-fi.', 'g33ki-cloud-storage-for-media-library'); ?></span>
+    </div>
 </div>
 
 

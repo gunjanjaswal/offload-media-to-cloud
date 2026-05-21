@@ -3,9 +3,12 @@
  * Plugin Name: G33ki Cloud Storage For Media Library
  * Plugin URI: https://github.com/gunjanjaswal/g33ki-cloud-storage-for-media-library
  * Description: Seamlessly offload your WordPress media library to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage. Effortlessly move media to cloud for better performance and CDN delivery.
- * Version: 1.2.2
+ * Version: 1.2.3
  * Author: Gunjan Jaswal
  * Author URI: https://gunjanjaswal.me
+ * Requires at least: 5.0
+ * Tested up to: 7.0
+ * Requires PHP: 7.2
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: g33ki-cloud-storage-for-media-library
@@ -18,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('G33KI_VERSION', '1.2.2');
+define('G33KI_VERSION', '1.2.3');
 define('G33KI_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('G33KI_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('G33KI_PLUGIN_BASENAME', plugin_basename(__FILE__));

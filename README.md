@@ -7,7 +7,8 @@
 [![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-21759B?style=for-the-badge&logo=wordpress&logoColor=white)](https://wordpress.org)
 [![PHP](https://img.shields.io/badge/PHP-7.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
 [![License](https://img.shields.io/badge/License-GPLv2-E74C3C?style=for-the-badge)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-1.2.2-2ECC71?style=for-the-badge)](https://github.com/gunjanjaswal/g33ki-cloud-storage-for-media-library/releases)
+[![Version](https://img.shields.io/badge/Version-1.2.3-2ECC71?style=for-the-badge)](https://github.com/gunjanjaswal/g33ki-cloud-storage-for-media-library/releases)
+[![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/gunjanjaswal)
 
 <br>
 
@@ -269,6 +270,37 @@ g33ki-cloud-storage-for-media-library/
 ├── 📄 readme.txt                                           ← WordPress.org readme
 └── 📄 README.md                                            ← You are here
 ```
+
+---
+
+## 📝 Changelog
+
+### 1.2.3
+- Updated "Tested up to" to WordPress 7.0.
+- Added "Support on Ko-fi" (https://ko-fi.com/gunjanjaswal) and "Contact Developer" links to plugin row meta on the Plugins screen.
+- Added `Requires at least`, `Tested up to`, and `Requires PHP` headers to the main plugin file.
+
+### 1.2.2
+- Rebranding: Renamed to G33ki Cloud Storage For Media Library.
+- SEO: Improved description for better search visibility on "offload media library" and "move media to cloud" keywords.
+
+### 1.2.1
+- Fix: Removed inline script tag from fix-urls.php template.
+- Fix: Replaced `ob_start()` full-page buffering with `wp_template_enhancement_output_buffer`.
+- Docs: Added External Services declaration block to document S3/DO/GCS usage.
+
+### 1.2.0
+- New: Full-page output buffer URL rewriting — catches theme-hardcoded image URLs.
+- New: Handles http/https URL variations and relative `/wp-content/uploads/` paths.
+- New: Filters for `post_thumbnail_html`, `widget_text`, `custom_logo`, `wp_get_attachment_image`, `header_image_tag`.
+
+### 1.1.0
+- New: Fix Permissions, Fix Thumbnails, Fix URLs repair tools.
+- New: Auto-retry on connection timeouts (up to 5 retries per batch).
+- New: Smart re-link — detects existing cloud files and skips re-upload.
+
+### 1.0.0
+- Initial release with Amazon S3, DigitalOcean Spaces, and Google Cloud Storage support.
 
 ---
 

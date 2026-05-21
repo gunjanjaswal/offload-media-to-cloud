@@ -65,6 +65,12 @@ $g33ki_is_configured = !empty($g33ki_settings['provider']) && !empty($g33ki_sett
             <div><strong><?php esc_html_e('Developer:', 'g33ki-cloud-storage-for-media-library'); ?></strong> Gunjan Jaswal</div>
             <div><strong><?php esc_html_e('Email:', 'g33ki-cloud-storage-for-media-library'); ?></strong> <a href="mailto:hello@gunjanjaswal.me">hello@gunjanjaswal.me</a></div>
             <div><strong><?php esc_html_e('Website:', 'g33ki-cloud-storage-for-media-library'); ?></strong> <a href="https://gunjanjaswal.me" target="_blank">gunjanjaswal.me</a></div>
+            <div style="margin-top: 12px;">
+                <a href="https://ko-fi.com/gunjanjaswal" target="_blank" class="button button-secondary" style="color:#0073aa; font-weight:bold;">
+                    <?php esc_html_e('☕ Support on Ko-fi', 'g33ki-cloud-storage-for-media-library'); ?>
+                </a>
+                <span style="margin-left: 8px; color: #666;"><?php esc_html_e('Plugin helpful? Back the development on Ko-fi.', 'g33ki-cloud-storage-for-media-library'); ?></span>
+            </div>
         </div>
     </div>
 </div>

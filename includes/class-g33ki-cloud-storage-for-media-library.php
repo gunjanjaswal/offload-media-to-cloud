@@ -363,7 +363,8 @@ class G33ki_Cloud_Storage_For_Media_Library {
      */
     public function plugin_action_links($links) {
         $settings_link = '<a href="' . admin_url('admin.php?page=g33ki-cloud-storage-for-media-library') . '">' . __('Settings', 'g33ki-cloud-storage-for-media-library') . '</a>';
-        array_unshift($links, $settings_link);
+        $kofi_link = '<a href="https://ko-fi.com/gunjanjaswal" target="_blank" style="color:#0073aa; font-weight:bold;">' . __('Support on Ko-fi', 'g33ki-cloud-storage-for-media-library') . '</a>';
+        array_unshift($links, $settings_link, $kofi_link);
         return $links;
     }
 
@@ -372,7 +373,7 @@ class G33ki_Cloud_Storage_For_Media_Library {
      */
     public function plugin_row_meta($links, $file) {
         if ($file === G33KI_PLUGIN_BASENAME) {
-            // Note: Buy Me a Coffee link removed as per request
+            $links[] = '<a href="mailto:hello@gunjanjaswal.me">' . __('Contact Developer', 'g33ki-cloud-storage-for-media-library') . '</a>';
         }
         return $links;
     }

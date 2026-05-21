@@ -2,11 +2,12 @@
 Contributors: gunjanjaswal
 Tags: offload media library, move media library to cloud, cloud storage, s3, cdn
 Requires at least: 5.0
-Tested up to: 6.9
-Stable tag: 1.2.2
+Tested up to: 7.0
+Stable tag: 1.2.3
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Donate link: https://ko-fi.com/gunjanjaswal
 
 Effortlessly offload media library assets to Amazon S3, DigitalOcean Spaces, or Google Cloud Storage. Seamlessly move media library to cloud.
 
@@ -273,6 +274,11 @@ Yes! All credentials are stored securely in your WordPress database. Data is tra
 
 == Changelog ==
 
+= 1.2.3 =
+* Updated "Tested up to" to WordPress 7.0.
+* Added "Support on Ko-fi" (https://ko-fi.com/gunjanjaswal) and "Contact Developer" links to plugin row meta on the Plugins screen.
+* Added `Requires at least`, `Tested up to`, and `Requires PHP` headers to the main plugin file.
+
 = 1.2.2 =
 * Rebranding: Renamed to G33ki Cloud Storage For Media Library
 * SEO: Improved description for better search visibility on "offload media library" and "move media to cloud" keywords
@@ -314,6 +320,9 @@ Yes! All credentials are stored securely in your WordPress database. Data is tra
 * Custom path prefix support
 
 == Upgrade Notice ==
+
+= 1.2.3 =
+Compatibility with WordPress 7.0; Ko-fi support + Contact Developer row meta added.
 
 = 1.1.0 =
 New repair tools: Fix Permissions, Fix Thumbnails, and Fix URLs. Auto-retry on connection drops. Recommended update for all users.
